@@ -1,29 +1,51 @@
-import { useState } from 'react'
-import ContactForm  from './ContactsForm'
-import Contacts from './Contacts'
-import Header from './Header'
-import Filter from './Filter'
+import { useEffect, useState } from "react";
+import axios from "axios";
+import ContactForm from "./ContactsForm";
+import Contacts from "./Contacts";
+import Header from "./Header";
+import Filter from "./Filter";
 
 const App = () => {
-  const [contacts, setContacts] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ])
+  const url = "http://localhost:3001/persons";
+  const [contacts, setContacts] = useState([]);
+  const [shownContacts, setShownContacts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [shownContacts, setShownContacts] = useState([...contacts]);
+  useEffect(() => {
+    const failMessage = "failed to load data :(";
+    axios
+      .get(url)
+      .then((response) => {
+        if (response.status === 200) {
+          setContacts(response.data);
+          setShownContacts(response.data);
+        } else {
+          alert(failMessage);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(failMessage);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div>
       <Header level={2} text="Phonebook" />
       {/* Could also have the filtering happen here in App, but this is clean */}
-      <Filter contacts={contacts} setContacts={setShownContacts}/>
-      <ContactForm contacts={contacts} setContacts={setContacts} />
-      <Contacts contacts={shownContacts} />
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div>
+          <Filter contacts={contacts} setContacts={setShownContacts} />
+          <ContactForm contacts={contacts} setContacts={setContacts} />
+          <Contacts contacts={shownContacts} />
+        </div>
+      )}
     </div>
-  )
+  );
+};
 
-}
-
-export default App
+export default App;

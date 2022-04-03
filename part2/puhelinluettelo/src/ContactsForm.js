@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./Header";
 import TextInput from "./TextInput";
 
@@ -6,6 +6,10 @@ const ContactForm = ({ contacts, setContacts }) => {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
   const [error, setError] = useState(false);
+  const [id, setId] = useState(0);
+  useEffect(() => {
+    setId(Math.max(...Object.values(contacts).map(contact => contact.id)) + 1);
+  }, [contacts])
 
   const isNumberValid = (aNumber) => {
     const re = /^\s*[+-]?(\d+|\d*\.\d+|\d+\.\d*)([Ee][+-]?\d+)?\s*$/;
@@ -28,6 +32,7 @@ const ContactForm = ({ contacts, setContacts }) => {
     const contact = {
       name: name,
       number: number,
+      id: id,
     };
 
     if (!isContactValid(contact)) {
@@ -41,6 +46,7 @@ const ContactForm = ({ contacts, setContacts }) => {
     }
 
     setContacts((prev) => [...prev, contact]);
+    setId(id + 1);
     setName("");
     setNumber("");
   };
