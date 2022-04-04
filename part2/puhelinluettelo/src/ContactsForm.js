@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import contactService from './services/contacts';
 import Header from "./Header";
 import TextInput from "./TextInput";
 
@@ -6,10 +7,6 @@ const ContactForm = ({ contacts, setContacts }) => {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
   const [error, setError] = useState(false);
-  const [id, setId] = useState(0);
-  useEffect(() => {
-    setId(Math.max(...Object.values(contacts).map(contact => contact.id)) + 1);
-  }, [contacts])
 
   const isNumberValid = (aNumber) => {
     const re = /^\s*[+-]?(\d+|\d*\.\d+|\d+\.\d*)([Ee][+-]?\d+)?\s*$/;
@@ -21,10 +18,11 @@ const ContactForm = ({ contacts, setContacts }) => {
   const isContactValid = (contact) => {
     return isNumberValid(contact.number) && isNameValid(contact.name);
   };
-
-  // Checks if someone with a same name exists
-  const contactExists = (contact) =>
-    contacts.map((c) => c.name).includes(contact.name);
+  
+  const findExisting = (contact) => {
+    const maybeThere = contacts.filter(c => c.name === contact.name);
+    return maybeThere.length > 0 ? maybeThere[0] : undefined;
+  }
 
   const handleClick = (e) => {
     e.preventDefault();
@@ -32,7 +30,6 @@ const ContactForm = ({ contacts, setContacts }) => {
     const contact = {
       name: name,
       number: number,
-      id: id,
     };
 
     if (!isContactValid(contact)) {
@@ -40,15 +37,25 @@ const ContactForm = ({ contacts, setContacts }) => {
       return;
     }
 
-    if (contactExists(contact)) {
-      alert(`${contact.name} already exists!`);
+    const existingContact = findExisting(contact);
+    if (existingContact) {
+      if (window.confirm(`${existingContact.name} already exists, update number?`)) {
+        contactService.update(existingContact.id, contact)
+        .then(updatedContact => {
+          setContacts(contacts.map(c => c.id === updatedContact.id ? updatedContact : c));
+          setName("");
+          setNumber("");
+        })
+      }
       return;
     }
 
-    setContacts((prev) => [...prev, contact]);
-    setId(id + 1);
-    setName("");
-    setNumber("");
+    contactService.create(contact)
+    .then(newContact => {
+      setContacts([...contacts, newContact]);
+      setName("");
+      setNumber("");
+    })
   };
 
   const handleChange = (setValue, value) => {

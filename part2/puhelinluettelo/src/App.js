@@ -1,35 +1,49 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import contactService from './services/contacts';
 import ContactForm from "./ContactsForm";
 import Contacts from "./Contacts";
 import Header from "./Header";
 import Filter from "./Filter";
 
 const App = () => {
-  const url = "http://localhost:3001/persons";
   const [contacts, setContacts] = useState([]);
   const [shownContacts, setShownContacts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const failMessage = "failed to load data :(";
+
   useEffect(() => {
-    const failMessage = "failed to load data :(";
-    axios
-      .get(url)
-      .then((response) => {
-        if (response.status === 200) {
-          setContacts(response.data);
-          setShownContacts(response.data);
-        } else {
-          alert(failMessage);
-        }
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        alert(failMessage);
-        setLoading(false);
-      });
+    contactService
+    .getAll()
+    .then(contacts => {
+      setContacts(contacts);
+      setShownContacts(contacts)
+      setLoading(false);
+    })
+    .catch(error => {
+      console.log(error);
+      alert(failMessage);
+      setLoading(false);
+    });
   }, []);
+
+  const deleteContact = (contact) => {
+    if (window.confirm(`Delete ${contact.name}?`)) {
+      contactService.del(contact.id)
+      .then(success => {
+        if (success) {
+          setContacts(contacts.filter(c => c.id !== contact.id));
+        } else {
+          alert("Something went wrong!");
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        alert("Something went wrong!");
+        // Probably doesn't exists in the server, could delete from contacts
+      })
+    }
+  };
 
   return (
     <div>
@@ -41,7 +55,7 @@ const App = () => {
         <div>
           <Filter contacts={contacts} setContacts={setShownContacts} />
           <ContactForm contacts={contacts} setContacts={setContacts} />
-          <Contacts contacts={shownContacts} />
+          <Contacts contacts={shownContacts} deleteContact={deleteContact}/>
         </div>
       )}
     </div>
