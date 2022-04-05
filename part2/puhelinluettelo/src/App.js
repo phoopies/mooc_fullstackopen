@@ -4,11 +4,19 @@ import ContactForm from "./ContactsForm";
 import Contacts from "./Contacts";
 import Header from "./Header";
 import Filter from "./Filter";
+import Notification from "./Notification";
+
+/* 
+TODO User can still add multiple same contacts from different browser instances 
+FIX? Check if exists from service rather than from state.
+*/
 
 const App = () => {
   const [contacts, setContacts] = useState([]);
   const [shownContacts, setShownContacts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState(""); // Should be a list
+  const [delMsg, setDelMsg] = useState(""); // Should be a list
 
   const failMessage = "failed to load data :(";
 
@@ -22,7 +30,7 @@ const App = () => {
     })
     .catch(error => {
       console.log(error);
-      alert(failMessage);
+      setErrorMsg(failMessage);
       setLoading(false);
     });
   }, []);
@@ -33,14 +41,15 @@ const App = () => {
       .then(success => {
         if (success) {
           setContacts(contacts.filter(c => c.id !== contact.id));
+          setDelMsg(`contact ${contact.name} deleted!`);
         } else {
           alert("Something went wrong!");
         }
       })
       .catch(error => {
         console.log(error);
-        alert("Something went wrong!");
-        // Probably doesn't exists in the server, could delete from contacts
+        setErrorMsg(`Contact ${contact.name} doesn't exist!`);
+        setContacts(contacts.filter(c => c.id !== contact.id));
       })
     }
   };
@@ -48,6 +57,8 @@ const App = () => {
   return (
     <div>
       <Header level={2} text="Phonebook" />
+      <Notification message={errorMsg} setMessage={setErrorMsg} color="red" />
+      <Notification message={delMsg} setMessage={setDelMsg} color="orange" />
       {/* Could also have the filtering happen here in App, but this is clean */}
       {loading ? (
         <p>Loading...</p>

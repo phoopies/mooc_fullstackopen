@@ -2,11 +2,13 @@ import { useState } from "react";
 import contactService from './services/contacts';
 import Header from "./Header";
 import TextInput from "./TextInput";
+import Notification from "./Notification";
 
 const ContactForm = ({ contacts, setContacts }) => {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
-  const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [msg, setMsg] = useState("");
 
   const isNumberValid = (aNumber) => {
     const re = /^\s*[+-]?(\d+|\d*\.\d+|\d+\.\d*)([Ee][+-]?\d+)?\s*$/;
@@ -32,8 +34,9 @@ const ContactForm = ({ contacts, setContacts }) => {
       number: number,
     };
 
+    // Should see what went wrong and set the message accordingly
     if (!isContactValid(contact)) {
-      setError(true);
+      setErrorMsg("Invalid contact details");
       return;
     }
 
@@ -43,6 +46,7 @@ const ContactForm = ({ contacts, setContacts }) => {
         contactService.update(existingContact.id, contact)
         .then(updatedContact => {
           setContacts(contacts.map(c => c.id === updatedContact.id ? updatedContact : c));
+          setMsg(`Updated contact ${contact.name}`);
           setName("");
           setNumber("");
         })
@@ -55,11 +59,11 @@ const ContactForm = ({ contacts, setContacts }) => {
       setContacts([...contacts, newContact]);
       setName("");
       setNumber("");
+      setMsg(`Added ${contact.name} to contacts`)
     })
   };
 
   const handleChange = (setValue, value) => {
-    setError(false);
     setValue(value);
   };
 
@@ -83,8 +87,8 @@ const ContactForm = ({ contacts, setContacts }) => {
           </button>
         </div>
       </form>
-      {/* TODO better error messages :) */}
-      {error && <p style={{ color: "red" }}>Invalid information</p>}
+      <Notification message={errorMsg} setMessage={setErrorMsg} color='red'/>
+      <Notification message={msg} setMessage={setMsg} color='green'/>
     </div>
   );
 };
