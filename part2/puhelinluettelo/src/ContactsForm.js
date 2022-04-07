@@ -9,17 +9,6 @@ const ContactForm = ({ contacts, setContacts }) => {
   const [number, setNumber] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [msg, setMsg] = useState("");
-
-  const isNumberValid = (aNumber) => {
-    const re = /^\s*[+-]?(\d+|\d*\.\d+|\d+\.\d*)([Ee][+-]?\d+)?\s*$/;
-    return re.test(aNumber);
-  };
-
-  const isNameValid = (aName) => aName.trim() !== "";
-
-  const isContactValid = (contact) => {
-    return isNumberValid(contact.number) && isNameValid(contact.name);
-  };
   
   const findExisting = (contact) => {
     const maybeThere = contacts.filter(c => c.name === contact.name);
@@ -30,15 +19,9 @@ const ContactForm = ({ contacts, setContacts }) => {
     e.preventDefault();
 
     const contact = {
-      name: name,
-      number: number,
+      name: name.trim(),
+      number: number.trim(),
     };
-
-    // Should see what went wrong and set the message accordingly
-    if (!isContactValid(contact)) {
-      setErrorMsg("Invalid contact details");
-      return;
-    }
 
     const existingContact = findExisting(contact);
     if (existingContact) {
@@ -49,6 +32,8 @@ const ContactForm = ({ contacts, setContacts }) => {
           setMsg(`Updated contact ${contact.name}`);
           setName("");
           setNumber("");
+        }).catch(error => {
+          setErrorMsg(error);
         })
       }
       return;
@@ -60,6 +45,8 @@ const ContactForm = ({ contacts, setContacts }) => {
       setName("");
       setNumber("");
       setMsg(`Added ${contact.name} to contacts`)
+    }).catch(error => {
+      setErrorMsg(error);
     })
   };
 
@@ -87,7 +74,7 @@ const ContactForm = ({ contacts, setContacts }) => {
           </button>
         </div>
       </form>
-      <Notification message={errorMsg} setMessage={setErrorMsg} color='red'/>
+      <Notification message={errorMsg} setMessage={setErrorMsg} clearTimeMs={6000} color='red'/>
       <Notification message={msg} setMessage={setMsg} color='green'/>
     </div>
   );

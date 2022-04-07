@@ -6,11 +6,6 @@ import Header from "./Header";
 import Filter from "./Filter";
 import Notification from "./Notification";
 
-/* 
-TODO User can still add multiple same contacts from different browser instances 
-FIX? Check if exists from service rather than from state.
-*/
-
 const App = () => {
   const [contacts, setContacts] = useState([]);
   const [shownContacts, setShownContacts] = useState([]);

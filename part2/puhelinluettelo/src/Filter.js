@@ -3,15 +3,15 @@ import { useState, useEffect } from "react";
 
 const Filter = ({ contacts, setContacts }) => {
   const [filter, setFilter] = useState("");
-
-  useEffect(() => {
-    setContacts(filterer(filter));
-  }, [contacts]);
-
+  
   const filterer = (aFilter) => {
     const re = new RegExp(`\\s*^${aFilter}.*\\s*`, ["i"]);
     return contacts.filter((contact) => re.test(contact.name));
   };
+
+  useEffect(() => {
+    setContacts(filterer(filter));
+  }, [filter, filterer, setContacts]);
 
   return (
     <div>
