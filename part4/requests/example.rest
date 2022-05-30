@@ -1,0 +1,21 @@
+@localUrl = http://localhost:3001/api
+@herokuUrl = idk
+
+@baseUrl = {{localUrl}}
+
+## Get all
+
+GET {{baseUrl}}/blogs
+
+
+### Create new
+
+POST {{baseUrl}}/blogs
+Content-Type: application/json
+
+{
+    "title": "String",
+    "author": "String",
+    "url": "String",
+    "likes": 1
+}
