@@ -25,4 +25,27 @@ router.get('/', async (_req, res) => {
     }
 });
 
+router.delete('/:id', async (req, res, _next) => {
+    await Blog.findByIdAndRemove(req.params.id);
+    res.status(204).end();
+});
+
+
+router.put('/:id', async (req, res, _next) => {
+    const body = req.body;
+
+    // Can only edit likes.
+    const blog = {
+        likes: body.likes
+    };
+
+    const updatedBlog = await Blog.findByIdAndUpdate(
+        req.params.id,
+        blog,
+        { new: true, runValidators: false, context: 'query' }
+    );
+
+    res.json(updatedBlog);
+});
+
 module.exports = router;

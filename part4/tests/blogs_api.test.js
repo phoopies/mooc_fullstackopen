@@ -1,67 +1,74 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
-const Blog = require('../models/blog');
-const helper = require('./helper');
 const app = require('../app');
 
 const api = supertest(app);
+
+const Blog = require('../models/blog');
+const helper = require('./helper');
 
 beforeEach(async () => {
     await Blog.deleteMany({});
     await Blog.insertMany(helper.blogs);
 });
 
-test('has correct amount of blogs', async () => {
-    const res = await api.get('/api/blogs');
-    expect(res.body).toHaveLength(helper.blogs.length);
+describe('Initialization', () => {
+    test('has correct amount of blogs', async () => {
+        const res = await api.get('/api/blogs');
+        expect(res.body).toHaveLength(helper.blogs.length);
+    });
 });
 
-test('Blog identifier is "id"', async () => {
-    const res = await api.get('/api/blogs');
-    const blog = res.body[0];
-    expect(blog.id).toBeDefined();
+describe('Misc', () => {
+    test('Blog identifier is "id"', async () => {
+        const res = await api.get('/api/blogs');
+        const blog = res.body[0];
+        expect(blog.id).toBeDefined();
+    });
+
+
+
+    test('Default likes is set to 0', async () => {
+        const blog = {
+            title: 'No likes',
+            author: 'The hated one',
+            url: 'www.com'
+        };
+
+        await api
+            .post('/api/blogs')
+            .send(blog)
+            .expect(201)
+            .expect('Content-Type', /application\/json/);
+
+        const blogs = await helper.blogsInDb();
+        const addedBlog = blogs.find(b => b.title === 'No likes');
+        expect(addedBlog.likes).toEqual(0);
+    });
 });
 
-test('A valid blog can be added', async () => {
-    const title = 'Testing patterns';
-    const blog = {
-        title: title,
-        author: 'Mooc',
-        url: 'https://youwish.u/',
-        likes: 100
-    };
+describe('Adding', () => {
+    test('A valid blog can be added', async () => {
+        const title = 'Testing patterns';
+        const blog = {
+            title: title,
+            author: 'Mooc',
+            url: 'https://youwish.u/',
+            likes: 100
+        };
 
-    await api
-        .post('/api/blogs')
-        .send(blog)
-        .expect(201)
-        .expect('Content-Type', /application\/json/);
+        await api
+            .post('/api/blogs')
+            .send(blog)
+            .expect(201)
+            .expect('Content-Type', /application\/json/);
 
-    const blogsAtEnd = await helper.blogsInDb();
-    expect(blogsAtEnd).toHaveLength(helper.blogs.length + 1);
+        const blogsAtEnd = await helper.blogsInDb();
+        expect(blogsAtEnd).toHaveLength(helper.blogs.length + 1);
 
-    expect(blogsAtEnd.map(b => b.title)).toContain(title);
-});
+        expect(blogsAtEnd.map(b => b.title)).toContain(title);
+    });
 
-test('Default likes is set to 0', async () => {
-    const blog = {
-        title: 'No likes',
-        author: 'The hated one',
-        url: 'www.com'
-    };
-
-    await api
-        .post('/api/blogs')
-        .send(blog)
-        .expect(201)
-        .expect('Content-Type', /application\/json/);
-
-    const blogs = await helper.blogsInDb();
-    const addedBlog = blogs.find(b => b.title === 'No likes');
-    expect(addedBlog.likes).toEqual(0);
-});
-
-describe('Adding invalid blogs', () => {
     test('Missing title', async () => {
         const blog = {
             author: 'Missing info',
@@ -99,6 +106,58 @@ describe('Adding invalid blogs', () => {
 
 });
 
+describe('Deletion', () => {
+    test('a note can be deleted', async () => {
+        const oldBlogs = await helper.blogsInDb();
+        const blog = oldBlogs[0];
+
+        await api
+            .delete(`/api/blogs/${blog.id}`)
+            .expect(204);
+
+        const blogs = await helper.blogsInDb();
+
+        expect(blogs).toHaveLength(
+            oldBlogs.length - 1
+        );
+
+        expect(blogs.map(b => b.id)).not.toContain(blog.id);
+    });
+});
+
+describe('Updating', () => {
+    test('Incrementing likes', async () => {
+        const oldBlogs = await helper.blogsInDb();
+        const blog = oldBlogs[0];
+
+        await api
+            .put(`/api/blogs/${blog.id}`)
+            .send({ ...blog, likes: blog.likes + 1 })
+            .expect(200);
+
+        const blogs = await helper.blogsInDb();
+        const updatedBlog = blogs.find(b => b.id === blog.id);
+
+        expect(updatedBlog.likes).toEqual(blog.likes + 1);
+    });
+
+    test('setting likes', async () => {
+        const oldBlogs = await helper.blogsInDb();
+        const blog = oldBlogs[0];
+
+        const newLikes = 10000;
+
+        await api
+            .put(`/api/blogs/${blog.id}`)
+            .send({ ...blog, likes: newLikes })
+            .expect(200);
+
+        const blogs = await helper.blogsInDb();
+        const updatedBlog = blogs.find(b => b.id === blog.id);
+
+        expect(updatedBlog.likes).toEqual(newLikes);
+    });
+});
 
 
 afterAll(() => {
