@@ -3,12 +3,12 @@
 
 @baseUrl = {{localUrl}}
 
-## Get all
+## Get all blogs
 
 GET {{baseUrl}}/blogs
 
 
-### Create new
+### Create new blog
 
 POST {{baseUrl}}/blogs
 Content-Type: application/json

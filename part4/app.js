@@ -3,6 +3,7 @@ const blogRouter = require('./controllers/blog');
 const mongoose = require('mongoose');
 const config = require('./utils/config');
 const logger = require('./utils/logger');
+const usersRouter = require('./controllers/user');
 
 const app = express();
 
@@ -20,7 +21,9 @@ mongoose.connect(config.DB_URL)
 
 app.use(express.static('build'));
 app.use(express.json());
+
 app.use('/api/blogs', blogRouter);
+app.use('/api/users', usersRouter);
 
 app.on('close', () => {
     disconnect();

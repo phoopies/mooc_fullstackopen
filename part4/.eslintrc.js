@@ -12,7 +12,7 @@ module.exports = {
     rules: {
         indent: ['error', 4],
         'no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
-        'linebreak-style': ['error', 'unix'],
+        'linebreak-style': ['error', 'windows'],
         quotes: ['error', 'single'],
         semi: ['error', 'always'],
         eqeqeq: 'error',

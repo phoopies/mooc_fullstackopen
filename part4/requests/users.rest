@@ -1,0 +1,20 @@
+@localUrl = http://localhost:3001/api
+@herokuUrl = idk
+
+@baseUrl = {{localUrl}}
+
+## Get all
+
+GET {{baseUrl}}/users
+
+
+### Create new
+
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+    "username": "String",
+    "name": "String",
+    "password": "secret"
+}
