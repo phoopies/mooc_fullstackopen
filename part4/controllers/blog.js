@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Blog = require('../models/blog');
+const User = require('../models/user');
 require('express-async-errors');
 
 router.post('/', async (req, res, _next) => {
@@ -9,14 +10,20 @@ router.post('/', async (req, res, _next) => {
     if (!(body.title && body.url)) {
         res.status(400).json({ 'error': 'Missing fields' });
     }
-    const blog = new Blog(req.body);
+
+    // TODO userId from request
+    const user = await User.findOne({});
+    const blog = new Blog({ ...req.body, user: user.id });
 
     const savedBlog = await blog.save();
+
+    user.blogs = user.blogs.concat(savedBlog.id);
+    await user.save();
     res.status(201).json(savedBlog);
 });
 
 router.get('/', async (_req, res) => {
-    const blog = await(Blog.find({}));
+    const blog = await(Blog.find({})).populate('user', { userName: 1, name: 1 });
 
     if (blog) {
         res.json(blog);
