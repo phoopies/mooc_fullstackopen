@@ -14,7 +14,7 @@ POST {{baseUrl}}/users
 Content-Type: application/json
 
 {
-    "username": "String",
+    "username": "String112",
     "name": "String",
-    "password": "secret"
+    "password": "assdasd"
 }

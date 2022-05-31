@@ -1,16 +1,23 @@
 const bcrypt = require('bcryptjs');
 const usersRouter = require('express').Router();
 const User = require('../models/user');
+const helper = require('../utils/login');
 
 usersRouter.post('/', async (req, res) => {
     const { username, name, password } = req.body;
 
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
+    if (!(await helper.isUniqueName(username))) {
         return res.status(400).json({
             error: 'username must be unique'
         });
     }
+
+    if (!helper.isValidPassword(password)) {
+        return res.status(400).json({
+            error: 'password is invalid'
+        });
+    }
+
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
