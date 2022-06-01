@@ -1,7 +1,14 @@
 const router = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
+
 require('express-async-errors');
+
+const getTokenFrom = req => {
+    const auth = req.get('authorization');
+    return auth && auth.toLowerCase().startsWith('bearer ') ? auth.substring(7) : null;
+};
 
 router.post('/', async (req, res, _next) => {
     const body = req.body;
@@ -11,10 +18,14 @@ router.post('/', async (req, res, _next) => {
         res.status(400).json({ 'error': 'Missing fields' });
     }
 
-    // TODO userId from request
-    const user = await User.findOne({});
-    const blog = new Blog({ ...req.body, user: user.id });
+    const token = getTokenFrom(req);
+    const decodedToken = jwt.verify(token, process.env.SECRET);
+    if (!token || !decodedToken.id) {
+        return res.status(401).json({ error: 'token missing or invalid' });
+    }
 
+    const user = await User.findById(decodedToken.id);
+    const blog = new Blog({ ...req.body, user: user.id });
     const savedBlog = await blog.save();
 
     user.blogs = user.blogs.concat(savedBlog.id);
