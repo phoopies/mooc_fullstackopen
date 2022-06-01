@@ -3,8 +3,9 @@
 
 @baseUrl = {{localUrl}}
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlN0cmluZzExMjEyMTIiLCJpZCI6IjYyOTY0M2I2NTczYWUzYWFkZDgyN2VjZCIsImlhdCI6MTY1NDA4ODE5M30.1lC3rrdPlSKfTNqbVUcDmUBah9R4zseYFTgi2rj2XeU
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNzc3MiLCJpZCI6IjYyOTdiYzNiNDAxYWJiOWY3YzFlMTVhMCIsImlhdCI6MTY1NDExMTI5M30.uxOmslF29ZlJI7PVYQ0uhb0DgzeAx96TypL8ai3TLiI
 
+@someId = 6297bcf67f24e2dff081f1ed
 ## Get all blogs
 
 GET {{baseUrl}}/blogs
@@ -22,3 +23,10 @@ Authorization: bearer {{token}}
     "url": "String",
     "likes": 1
 }
+
+
+### Delete a blog
+
+DELETE {{baseUrl}}/blogs/{{someId}}
+Content-Type: application/json
+Authorization: bearer {{token}}

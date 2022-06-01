@@ -38,7 +38,20 @@ router.get('/', async (_req, res) => {
 });
 
 router.delete('/:id', async (req, res, _next) => {
-    await Blog.findByIdAndRemove(req.params.id);
+    const blog = await Blog.findById(req.params.id);
+
+    const decodedToken = jwt.verify(req.token, process.env.SECRET);
+    if (!req.token || !decodedToken.id) {
+        return res.status(401).json({ error: 'token missing or invalid' });
+    }
+
+    const user = await User.findById(decodedToken.id);
+
+    if (blog.user.toString() !== user.id.toString()) {
+        return res.status(403).json({ error: 'Not the owner of the blog' });
+    }
+
+    Blog.findByIdAndDelete(blog.id);
     res.status(204).end();
 });
 
