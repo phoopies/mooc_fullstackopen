@@ -18,3 +18,15 @@ Content-Type: application/json
     "name": "String",
     "password": "assdasd"
 }
+
+
+### Login
+
+
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "username": "String1121212",
+    "password": "assdasd"
+}
