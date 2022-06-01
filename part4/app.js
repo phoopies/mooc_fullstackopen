@@ -5,8 +5,10 @@ const config = require('./utils/config');
 const logger = require('./utils/logger');
 const usersRouter = require('./controllers/user');
 const loginRouter = require('./controllers/login');
+const middleware = require('./utils/middleware');
 
 const app = express();
+app.use(middleware.tokenExtractor);
 
 const disconnect = () => {
     logger.info('Disconnecting...');
@@ -32,6 +34,6 @@ app.on('close', () => {
 });
 
 // app.use(middleware.unknownEndpoint);
-// app.use(middleware.errorHandler);
+app.use(middleware.errorHandler);
 
 module.exports = app;

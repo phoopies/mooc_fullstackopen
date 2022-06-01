@@ -5,11 +5,6 @@ const jwt = require('jsonwebtoken');
 
 require('express-async-errors');
 
-const getTokenFrom = req => {
-    const auth = req.get('authorization');
-    return auth && auth.toLowerCase().startsWith('bearer ') ? auth.substring(7) : null;
-};
-
 router.post('/', async (req, res, _next) => {
     const body = req.body;
 
@@ -18,9 +13,8 @@ router.post('/', async (req, res, _next) => {
         res.status(400).json({ 'error': 'Missing fields' });
     }
 
-    const token = getTokenFrom(req);
-    const decodedToken = jwt.verify(token, process.env.SECRET);
-    if (!token || !decodedToken.id) {
+    const decodedToken = jwt.verify(req.token, process.env.SECRET);
+    if (!req.token || !decodedToken.id) {
         return res.status(401).json({ error: 'token missing or invalid' });
     }
 
