@@ -7,8 +7,14 @@ const blogs = [
         author: 'Michael Chan',
         url: 'https://reactpatterns.com/',
         likes: 7
-    }
+    },
 ];
+
+const testUser = {
+    username: 'tester',
+    name: 'tester',
+    password: 'secret'
+};
 
 const blogsInDb = async () => {
     const dbBlogs = await Blog.find({});
@@ -23,5 +29,6 @@ const usersInDb = async () => {
 module.exports = {
     blogs,
     blogsInDb,
-    usersInDb
+    usersInDb,
+    testUser
 };

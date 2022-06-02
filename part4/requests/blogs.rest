@@ -3,13 +3,13 @@
 
 @baseUrl = {{localUrl}}
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNzc3MiLCJpZCI6IjYyOTdiYzNiNDAxYWJiOWY3YzFlMTVhMCIsImlhdCI6MTY1NDExMTI5M30.uxOmslF29ZlJI7PVYQ0uhb0DgzeAx96TypL8ai3TLiI
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNzcyIsImlkIjoiNjI5NzY2NmViY2ExMThmMzlhOTUwOGRkIiwiaWF0IjoxNjU0MTEyMDIwfQ.NCijKDl60KYWQZdRTeU_46dAyNo24iqw58tQP1fPqW0
 
-@someId = 6297bcf67f24e2dff081f1ed
-## Get all blogs
+@someId = 6297bf2ea1e1f16a6cba9a3a
+## Get all blogs, needs token which kinda sucks
 
 GET {{baseUrl}}/blogs
-
+Authorization: bearer {{token}}
 
 ### Create new blog
 

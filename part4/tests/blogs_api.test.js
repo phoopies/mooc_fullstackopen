@@ -5,17 +5,35 @@ const app = require('../app');
 const api = supertest(app);
 
 const Blog = require('../models/blog');
+const User = require('../models/user');
 const helper = require('./helper');
+
+// Better way?
+var token;
 
 beforeEach(async () => {
     await Blog.deleteMany({});
     await Blog.insertMany(helper.blogs);
+
+    await User.deleteMany({});
+    await api.post('/api/users')
+        .send(helper.testUser);
+
+    const res = await api.post('/api/login')
+        .send(helper.testUser);
+
+    token = res.body.token;
 });
 
-describe('Initialization', () => {
+describe('Before each', () => {
     test('has correct amount of blogs', async () => {
         const res = await api.get('/api/blogs');
         expect(res.body).toHaveLength(helper.blogs.length);
+    });
+
+    test('Test user exists and token is created', async () => {
+        const res = await api.get('/api/users');
+        expect(res.body.map(user => user.name)).toContain('tester');
     });
 });
 
@@ -25,8 +43,6 @@ describe('Misc', () => {
         const blog = res.body[0];
         expect(blog.id).toBeDefined();
     });
-
-
 
     test('Default likes is set to 0', async () => {
         const blog = {
@@ -38,6 +54,7 @@ describe('Misc', () => {
         await api
             .post('/api/blogs')
             .send(blog)
+            .set('Authorization', `bearer ${token}`)
             .expect(201)
             .expect('Content-Type', /application\/json/);
 
@@ -60,6 +77,7 @@ describe('Adding', () => {
         await api
             .post('/api/blogs')
             .send(blog)
+            .set('Authorization', `bearer ${token}`)
             .expect(201)
             .expect('Content-Type', /application\/json/);
 
@@ -78,6 +96,7 @@ describe('Adding', () => {
         await api
             .post('/api/blogs')
             .send(blog)
+            .set('Authorization', `bearer ${token}`)
             .expect(400);
     });
 
@@ -90,6 +109,7 @@ describe('Adding', () => {
         await api
             .post('/api/blogs')
             .send(blog)
+            .set('Authorization', `bearer ${token}`)
             .expect(400);
     });
 
@@ -101,18 +121,37 @@ describe('Adding', () => {
         await api
             .post('/api/blogs')
             .send(blog)
+            .set('Authorization', `bearer ${token}`)
             .expect(400);
     });
 
 });
 
 describe('Deletion', () => {
-    test('a note can be deleted', async () => {
+    test('a note can be deleted with valid token', async () => {
+
+        const blog = {
+            title: 'to be deleted',
+            author: 'ddd',
+            url: 'https://ddd.d/',
+            likes: 0
+        };
+
+        const res = await api
+            .post('/api/blogs')
+            .send(blog)
+            .set('Authorization', `bearer ${token}`)
+            .expect(201)
+            .expect('Content-Type', /application\/json/);
+
+        const blogId = res.body.id;
+
         const oldBlogs = await helper.blogsInDb();
-        const blog = oldBlogs[0];
+        expect(oldBlogs.map(b => b.id)).toContain(blogId);
 
         await api
-            .delete(`/api/blogs/${blog.id}`)
+            .delete(`/api/blogs/${blogId}`)
+            .set('Authorization', `bearer ${token}`)
             .expect(204);
 
         const blogs = await helper.blogsInDb();
@@ -121,7 +160,22 @@ describe('Deletion', () => {
             oldBlogs.length - 1
         );
 
-        expect(blogs.map(b => b.id)).not.toContain(blog.id);
+        expect(blogs.map(b => b.id)).not.toContain(blogId);
+    });
+
+    test('a note can NOT be deleted without a token', async () => {
+        const oldBlogs = await helper.blogsInDb();
+        const blog = oldBlogs[0];
+
+        await api
+            .delete(`/api/blogs/${blog.id}`)
+            .expect(401);
+
+        const blogs = await helper.blogsInDb();
+
+        expect(blogs).toHaveLength(
+            oldBlogs.length
+        );
     });
 });
 
@@ -133,6 +187,7 @@ describe('Updating', () => {
         await api
             .put(`/api/blogs/${blog.id}`)
             .send({ ...blog, likes: blog.likes + 1 })
+            .set('Authorization', `bearer ${token}`)
             .expect(200);
 
         const blogs = await helper.blogsInDb();
@@ -150,6 +205,7 @@ describe('Updating', () => {
         await api
             .put(`/api/blogs/${blog.id}`)
             .send({ ...blog, likes: newLikes })
+            .set('Authorization', `bearer ${token}`)
             .expect(200);
 
         const blogs = await helper.blogsInDb();

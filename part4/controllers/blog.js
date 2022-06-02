@@ -1,11 +1,10 @@
 const router = require('express').Router();
 const Blog = require('../models/blog');
-const User = require('../models/user');
-const jwt = require('jsonwebtoken');
+const { userExtractor } = require('../utils/middleware');
 
 require('express-async-errors');
 
-router.post('/', async (req, res, _next) => {
+router.post('/', userExtractor, async (req, res, _next) => {
     const body = req.body;
 
     // Would use mongoose internal validation but it returns a status code 500.
@@ -13,12 +12,7 @@ router.post('/', async (req, res, _next) => {
         res.status(400).json({ 'error': 'Missing fields' });
     }
 
-    const decodedToken = jwt.verify(req.token, process.env.SECRET);
-    if (!req.token || !decodedToken.id) {
-        return res.status(401).json({ error: 'token missing or invalid' });
-    }
-
-    const user = await User.findById(decodedToken.id);
+    const user = req.user;
     const blog = new Blog({ ...req.body, user: user.id });
     const savedBlog = await blog.save();
 
@@ -37,21 +31,16 @@ router.get('/', async (_req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res, _next) => {
+router.delete('/:id', userExtractor, async (req, res, _next) => {
     const blog = await Blog.findById(req.params.id);
 
-    const decodedToken = jwt.verify(req.token, process.env.SECRET);
-    if (!req.token || !decodedToken.id) {
-        return res.status(401).json({ error: 'token missing or invalid' });
-    }
-
-    const user = await User.findById(decodedToken.id);
+    const user = req.user;
 
     if (blog.user.toString() !== user.id.toString()) {
         return res.status(403).json({ error: 'Not the owner of the blog' });
     }
 
-    Blog.findByIdAndDelete(blog.id);
+    await Blog.findByIdAndDelete(blog.id);
     res.status(204).end();
 });
 
