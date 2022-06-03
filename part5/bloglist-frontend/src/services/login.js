@@ -1,4 +1,6 @@
 import axios from "axios";
+import blogService from './blogs';
+
 const baseUrl = '/api/login';
 
 const login = async (username, password) => {
@@ -7,7 +9,18 @@ const login = async (username, password) => {
         password,
     };
     const res = await axios.post(baseUrl, credentials);
+    window.localStorage.setItem('user', JSON.stringify(res.data));
+    blogService.setToken(res.data.token);
     return res.data;
-}
+};
 
-export default { login };
+const logout = () => {
+    window.localStorage.removeItem('user');
+};
+
+const getUser = () => {
+    return JSON.parse(window.localStorage.getItem('user'));
+};
+
+
+export default { login, logout, getUser };
