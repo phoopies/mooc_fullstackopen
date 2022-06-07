@@ -2,7 +2,7 @@ import { useState } from 'react';
 import TextInput from './TextInput';
 import BlogService from '../services/blogs';
 
-const BlogForm = ({ setBlogs, addNotification }) => {
+const BlogForm = ({ addBlog }) => {
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const [url, setUrl] = useState('');
@@ -10,9 +10,8 @@ const BlogForm = ({ setBlogs, addNotification }) => {
     const createBlog = async (e) => {
         e.preventDefault();
 
-        const blog = await BlogService.create(title, author, url);
-        setBlogs(prev => ([...prev, blog]));
-        addNotification(`${title} added by ${author}`, 'green');
+        const res = await BlogService.create(title, author, url);
+        addBlog(res.data);
         setTitle('');
         setAuthor('');
         setUrl('');

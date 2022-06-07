@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
+import Hidable from './components/Hidable';
 import Login from './components/Login';
 import Notification from './components/Notification';
 import blogService from './services/blogs';
@@ -11,6 +12,7 @@ const App = () => {
     const [user, setUser] = useState(undefined);
 
     const [notifications, setNotifications] = useState([]);
+    const blogFormRef = useRef();
 
     useEffect(() => {
         blogService.getAll().then(blogs =>
@@ -38,6 +40,12 @@ const App = () => {
             n !== notification)), 3500);
     };
 
+    const addBlog = (blog) => {
+        setBlogs([...blogs, blog]);
+        blogFormRef.current.toggleVisibility();
+        addNotification(`${blog.title} added by ${blog.author}`, 'green');
+    };
+
     return (
         <div>
             {notifications.map(notification =>
@@ -51,9 +59,13 @@ const App = () => {
                 <div>
                     <p>{user.name} logged in</p>
                     <button onClick={logout}>logout</button>
-                    <BlogForm setBlogs={setBlogs} addNotification={addNotification}/>
+                    <Hidable buttonLabel='Add a new blog' ref={blogFormRef}>
+                        <BlogForm addBlog={addBlog} />
+                    </Hidable>
                 </div> :
-                <Login setUser={setUser} addNotification={addNotification} />
+                <Hidable buttonLabel='Open login'>
+                    <Login setUser={setUser} addNotification={addNotification} />
+                </Hidable>
             }
 
             <h2>blogs</h2>
