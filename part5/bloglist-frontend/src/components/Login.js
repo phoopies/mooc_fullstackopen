@@ -1,8 +1,8 @@
-import { useState } from "react";
-import loginService from "../services/login";
-import TextInput from "./TextInput";
+import { useState } from 'react';
+import loginService from '../services/login';
+import TextInput from './TextInput';
 
-const Login = ({ setUser }) => {
+const Login = ({ setUser, addNotification }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -12,11 +12,13 @@ const Login = ({ setUser }) => {
         try {
             const user = await loginService.login(username, password);
             setUser(user);
+            addNotification(`${user.name} logged in`, 'green');
             setUsername('');
             setPassword('');
-            console.log("Logged in as " + user.name);
+            console.log('Logged in as ' + user.name);
         } catch (exception) {
-            console.log("Wrong credentials");
+            console.log('Wrong credentials');
+            addNotification('Wrong credentials!', 'red');
         }
     };
 

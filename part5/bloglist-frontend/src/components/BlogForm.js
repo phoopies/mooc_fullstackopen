@@ -1,17 +1,18 @@
-import { useState } from "react";
-import TextInput from "./TextInput";
+import { useState } from 'react';
+import TextInput from './TextInput';
 import BlogService from '../services/blogs';
 
-const BlogForm = ({setBlogs}) => {
+const BlogForm = ({ setBlogs, addNotification }) => {
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const [url, setUrl] = useState('');
 
     const createBlog = async (e) => {
         e.preventDefault();
-        
+
         const blog = await BlogService.create(title, author, url);
         setBlogs(prev => ([...prev, blog]));
+        addNotification(`${title} added by ${author}`, 'green');
         setTitle('');
         setAuthor('');
         setUrl('');
@@ -25,7 +26,7 @@ const BlogForm = ({setBlogs}) => {
             <TextInput text='url' value={url} onChange={value => setUrl(value)}/>
             <input type='submit' value='create'/>
         </form>
-    )
+    );
 };
 
 export default BlogForm;

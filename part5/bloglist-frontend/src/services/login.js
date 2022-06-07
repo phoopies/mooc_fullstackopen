@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 import blogService from './blogs';
 
 const baseUrl = '/api/login';
