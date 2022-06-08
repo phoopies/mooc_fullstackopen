@@ -22,7 +22,7 @@ router.post('/', userExtractor, async (req, res, _next) => {
 });
 
 router.get('/', async (_req, res) => {
-    const blog = await(Blog.find({})).populate('user', { userName: 1, name: 1 });
+    const blog = await(Blog.find({})).populate('user', { username: 1, name: 1 });
 
     if (blog) {
         res.json(blog);

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import blogService from '../services/blogs';
 
-const Blog = ({ blog, setBlogs }) => {
+const Blog = ({ blog, setBlogs, isOwner }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
 
@@ -13,6 +13,16 @@ const Blog = ({ blog, setBlogs }) => {
             .map(b => b.id === updatedBlog.id ? updatedBlog : b)
             .sort((a, b) => b.likes - a.likes) // Would be enough to move the updated blog
         );
+    };
+
+    const remove = async () => {
+        const really = confirm(`Remove blog ${blog.title}?`);
+        if (!really) return;
+        const res = await blogService.remove(blog);
+        if (res.status !== 204) {
+            console.log(`Failed to delete ${blog}`);
+        }
+        setBlogs(prev => prev.filter(b => b.id !== blog.id));
     };
 
     return (
@@ -29,6 +39,7 @@ const Blog = ({ blog, setBlogs }) => {
                     <button onClick={like}>like</button>
                 </div>
                 <div>{blog.author}</div>
+                {isOwner && <button onClick={remove}>remove</button>}
             </div>
             }
             <button
