@@ -15,9 +15,9 @@ const App = () => {
     const blogFormRef = useRef();
 
     useEffect(() => {
-        blogService.getAll().then(blogs =>
-            setBlogs(blogs.sort((a,b) => b.likes - a.likes))
-        );
+        blogService
+            .getAll()
+            .then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
     }, []);
 
     useEffect(() => {
@@ -35,43 +35,81 @@ const App = () => {
 
     const addNotification = (message, color) => {
         const notification = { message, color }; // Could add some id for removal
-        setNotifications(prev => [...prev, notification]);
-        setTimeout(() => setNotifications(prev => prev.filter(n =>
-            n !== notification)), 3500);
+        setNotifications((prev) => [...prev, notification]);
+        setTimeout(
+            () => setNotifications((prev) => prev.filter((n) => n !== notification)),
+            3500
+        );
     };
 
-    const addBlog = (blog) => {
+    const addBlog = async (title, author, url) => {
+        const res = await blogService.create(title, author, url);
+        const blog = res.data;
         setBlogs([...blogs, blog]);
         blogFormRef.current.toggleVisibility();
+        // blog doesnt have user.name -> can't be deleted unless refreshed
         addNotification(`${blog.title} added by ${blog.author}`, 'green');
+    };
+
+    // Not sure why the assigment says that the whole blog has to be sent to the server
+    const like = async (blog) => {
+        blog.likes++;
+        const updatedBlog = await blogService.update(blog);
+        setBlogs(
+            (prev) =>
+                prev
+                    .map((b) => (b.id === updatedBlog.id ? updatedBlog : b))
+                    .sort((a, b) => b.likes - a.likes) // Would be enough to move the updated blog
+        );
+    };
+
+    const remove = async (blog) => {
+        const really = confirm(`Remove blog ${blog.title}?`);
+        if (!really) return;
+        const res = await blogService.remove(blog);
+        if (res.status !== 204) {
+            console.log(`Failed to delete ${blog}`);
+        }
+        setBlogs((prev) => prev.filter((b) => b.id !== blog.id));
     };
 
     return (
         <div>
-            {notifications.map(notification =>
+            {notifications.map((notification) => (
                 <Notification
                     key={notification.message}
                     message={notification.message}
                     color={notification.color}
                 />
-            )}
-            {user ?
+            ))}
+            {user ? (
                 <div>
                     <p>{user.name} logged in</p>
                     <button onClick={logout}>logout</button>
                     <Hidable buttonLabel='Add a new blog' ref={blogFormRef}>
                         <BlogForm addBlog={addBlog} />
                     </Hidable>
-                </div> :
+                </div>
+            ) : (
                 <Hidable buttonLabel='Open login'>
                     <Login setUser={setUser} addNotification={addNotification} />
                 </Hidable>
-            }
+            )}
 
             <h2>blogs</h2>
-            {blogs.map(blog =>
-                <Blog key={blog.id} blog={blog} setBlogs={setBlogs} isOwner={user && blog.user && user.username === blog.user.username /* Username is unique but eh*/} />
-            )}
+            {blogs.map((blog) => (
+                <Blog
+                    key={blog.id}
+                    blog={blog}
+                    like={() => like(blog)}
+                    remove={() => remove(blog)}
+                    isOwner={
+                        user &&
+            blog.user &&
+            user.username === blog.user.username /* Username is unique but eh*/
+                    }
+                />
+            ))}
         </div>
     );
 };

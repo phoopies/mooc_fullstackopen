@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import TextInput from './TextInput';
-import BlogService from '../services/blogs';
 
 const BlogForm = ({ addBlog }) => {
     const [title, setTitle] = useState('');
@@ -9,9 +8,7 @@ const BlogForm = ({ addBlog }) => {
 
     const createBlog = async (e) => {
         e.preventDefault();
-
-        const res = await BlogService.create(title, author, url);
-        addBlog(res.data);
+        addBlog(title, author, url);
         setTitle('');
         setAuthor('');
         setUrl('');
@@ -20,9 +17,9 @@ const BlogForm = ({ addBlog }) => {
     return (
         <form onSubmit={createBlog}>
             <h2>Create a new blog</h2>
-            <TextInput text='title' value={title} onChange={value => setTitle(value)}/>
-            <TextInput text='author' value={author} onChange={value => setAuthor(value)}/>
-            <TextInput text='url' value={url} onChange={value => setUrl(value)}/>
+            <TextInput text='title' value={title} onChange={value => setTitle(value)} placeholder='title'/>
+            <TextInput text='author' value={author} onChange={value => setAuthor(value)} placeholder='author'/>
+            <TextInput text='url' value={url} onChange={value => setUrl(value)} placeholder='url'/>
             <input type='submit' value='create'/>
         </form>
     );

@@ -1,29 +1,9 @@
 import { useState } from 'react';
-import blogService from '../services/blogs';
 
-const Blog = ({ blog, setBlogs, isOwner }) => {
+const Blog = ({ blog, remove, isOwner, like }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [showDetails, setShowDetails] = useState(false);
 
-    // Not sure why the assigment says that the whole blog has to be sent to the server
-    const like = async () => {
-        blog.likes++;
-        const updatedBlog = await blogService.update(blog);
-        setBlogs(prev => prev
-            .map(b => b.id === updatedBlog.id ? updatedBlog : b)
-            .sort((a, b) => b.likes - a.likes) // Would be enough to move the updated blog
-        );
-    };
-
-    const remove = async () => {
-        const really = confirm(`Remove blog ${blog.title}?`);
-        if (!really) return;
-        const res = await blogService.remove(blog);
-        if (res.status !== 204) {
-            console.log(`Failed to delete ${blog}`);
-        }
-        setBlogs(prev => prev.filter(b => b.id !== blog.id));
-    };
 
     return (
         <div
@@ -31,14 +11,13 @@ const Blog = ({ blog, setBlogs, isOwner }) => {
             // onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <h4>{blog.title}</h4>
+            <h4>{blog.title} | {blog.author}</h4>
             {showDetails && <div style={{ marginBottom: 15 }}>
                 <a href={blog.url}>{blog.url}</a>
                 <div>
                     likes {blog.likes}
-                    <button onClick={like}>like</button>
+                    <button onClick={like} aria-label='like-btn' >like</button>
                 </div>
-                <div>{blog.author}</div>
                 {isOwner && <button onClick={remove}>remove</button>}
             </div>
             }
