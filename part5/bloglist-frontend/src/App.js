@@ -86,30 +86,37 @@ const App = () => {
                 <div>
                     <p>{user.name} logged in</p>
                     <button onClick={logout}>logout</button>
-                    <Hidable buttonLabel='Add a new blog' ref={blogFormRef}>
+                    <Hidable
+                        buttonLabel="Add a new blog"
+                        id="new-blog-btn"
+                        ref={blogFormRef}
+                    >
                         <BlogForm addBlog={addBlog} />
                     </Hidable>
                 </div>
             ) : (
-                <Hidable buttonLabel='Open login'>
+                <Hidable buttonLabel="Open login">
                     <Login setUser={setUser} addNotification={addNotification} />
                 </Hidable>
             )}
 
             <h2>blogs</h2>
-            {blogs.map((blog) => (
-                <Blog
-                    key={blog.id}
-                    blog={blog}
-                    like={() => like(blog)}
-                    remove={() => remove(blog)}
-                    isOwner={
-                        user &&
-            blog.user &&
-            user.username === blog.user.username /* Username is unique but eh*/
-                    }
-                />
-            ))}
+            <div id='blogs'>
+                {blogs.map((blog) => (
+                    <Blog
+                        key={blog.id}
+                        blog={blog}
+                        like={() => like(blog)}
+                        remove={() => remove(blog)}
+                        isOwner={
+                            user &&
+              blog.user &&
+              user.username ===
+                blog.user.username /* Username is unique but eh*/
+                        }
+                    />
+                ))}
+            </div>
         </div>
     );
 };

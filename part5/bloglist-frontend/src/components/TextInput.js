@@ -1,8 +1,8 @@
-const TextInput = ({ text, value, onChange, placeholder }) => {
+const TextInput = ({ text, value, onChange, id, placeholder }) => {
     return (
         <div>
             <label>{text} </label>
-            <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}/>
+            <input value={value} id={id} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}/>
         </div>
     );
 };

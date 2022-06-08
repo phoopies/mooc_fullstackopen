@@ -25,9 +25,19 @@ const Login = ({ setUser, addNotification }) => {
     return (
         <form onSubmit={onSubmit}>
             <h2>Login to start creating blogs</h2>
-            <TextInput text='username' value={username} onChange={value => setUsername(value)} />
-            <TextInput text='password' value={password} onChange={value => setPassword(value)} />
-            <button type="submit">Login</button>
+            <TextInput
+                text="username"
+                value={username}
+                id="username"
+                onChange={(value) => setUsername(value)}
+            />
+            <TextInput
+                text="password"
+                value={password}
+                id="password"
+                onChange={(value) => setPassword(value)}
+            />
+            <button id='login-btn' type="submit">Login</button>
         </form>
     );
 };

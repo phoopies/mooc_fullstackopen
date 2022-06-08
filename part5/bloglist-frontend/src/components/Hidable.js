@@ -15,7 +15,7 @@ const Hidable = forwardRef((props, ref) => {
     return (
         <div>
             {isVisible && props.children}
-            <button onClick={toggleVisibility}>{isVisible ? 'cancel' : props.buttonLabel}</button>
+            <button id={props.id} onClick={toggleVisibility}>{isVisible ? 'cancel' : props.buttonLabel}</button>
         </div>
     );
 });

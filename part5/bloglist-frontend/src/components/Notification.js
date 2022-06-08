@@ -11,15 +11,10 @@ const Notification = ({ message, color }) => {
 
     return (
         message === null || message === undefined || message === '' ? null :
-            <div style={style}>
+            <div style={style} className='notification'>
                 <p>{message}</p>
             </div>
     );
-};
-
-Notification.defaultProps = {
-    clearTimeMs: 3500,
-    color: 'orange',
 };
 
 export default Notification;

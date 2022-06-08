@@ -17,10 +17,10 @@ const BlogForm = ({ addBlog }) => {
     return (
         <form onSubmit={createBlog}>
             <h2>Create a new blog</h2>
-            <TextInput text='title' value={title} onChange={value => setTitle(value)} placeholder='title'/>
-            <TextInput text='author' value={author} onChange={value => setAuthor(value)} placeholder='author'/>
-            <TextInput text='url' value={url} onChange={value => setUrl(value)} placeholder='url'/>
-            <input type='submit' value='create'/>
+            <TextInput text='title' id='title' value={title} onChange={value => setTitle(value)} placeholder='title'/>
+            <TextInput text='author' id='author' value={author} onChange={value => setAuthor(value)} placeholder='author'/>
+            <TextInput text='url' id='url' value={url} onChange={value => setUrl(value)} placeholder='url'/>
+            <input type='submit' value='create' id='create-blog-btn'/>
         </form>
     );
 };
