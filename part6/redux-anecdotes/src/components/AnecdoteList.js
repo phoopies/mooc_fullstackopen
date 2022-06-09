@@ -2,7 +2,11 @@ import { useSelector } from 'react-redux';
 import Anecdote from './Anecdote';
 
 const AnecdoteList = () => {
-    const anecdotes = useSelector(state => state);
+    const regexify = (filter) => {
+        return new RegExp(`.*${filter}.*`, 'i');
+    };
+    const filter = useSelector(state => state.filter);
+    const anecdotes = useSelector(state => state.anecdotes).filter(anecdote => regexify(filter).test(anecdote.content));
 
     return (
         <div>
