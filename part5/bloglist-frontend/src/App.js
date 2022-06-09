@@ -24,6 +24,7 @@ const App = () => {
         const savedUser = loginService.getUser();
         if (!savedUser) return;
         setUser(savedUser);
+        console.log(savedUser);
         blogService.setToken(savedUser.token);
     }, []);
 
@@ -47,7 +48,6 @@ const App = () => {
         const blog = res.data;
         setBlogs([...blogs, blog]);
         blogFormRef.current.toggleVisibility();
-        // blog doesnt have user.name -> can't be deleted unless refreshed
         addNotification(`${blog.title} added by ${blog.author}`, 'green');
     };
 
@@ -110,9 +110,8 @@ const App = () => {
                         remove={() => remove(blog)}
                         isOwner={
                             user &&
-              blog.user &&
-              user.username ===
-                blog.user.username /* Username is unique but eh*/
+                            blog.user &&
+                            (user.id === blog.user.id || user.id === blog.user)
                         }
                     />
                 ))}

@@ -68,5 +68,102 @@ describe('Blog app', function() {
                 .should('contain', 'A new blog | Dude')
                 .and('contain', 'view');
         });
+
+        describe('And some blogs exist', function() {
+            beforeEach(function() {
+                cy.createBlog({
+                    title: 'Some title',
+                    author: 'Author',
+                    url: 'Url',
+                });
+                cy.createBlog({
+                    title: 'A better blog',
+                    author: 'Kalle',
+                    url: 'fullstackopen.com'
+                });
+            });
+
+            it('A blog can be liked', function() {
+                cy.contains('A better blog')
+                    .parent()
+                    .contains('view')
+                    .click()
+                    .parent()
+                    .get('.like-btn')
+                    .click()
+                    .click();
+
+                cy.contains('likes 2');
+
+                cy.contains('Some title')
+                    .parent()
+                    .contains('view')
+                    .click();
+
+                cy.contains('likes 0');
+            });
+
+
+            it('Just liked blog can be deleted', function() {
+                cy.contains('Some title')
+                    .parent().within(function() {
+                        cy.contains('view').click();
+                        cy.get('.like-btn').click().click();
+                        cy.contains('remove').click();
+                    });
+
+                cy.get('html').should('not.contain', 'Some title');
+            });
+
+            it('Owned blog can be deleted', function() {
+                cy.contains('A better blog')
+                    .parent()
+                    .contains('view')
+                    .click()
+                    .parent()
+                    .contains('remove')
+                    .click();
+
+                cy.get('html').should('not.contain', 'A better blog');
+            });
+
+            it('Not owned blog cannot be deleted', function() {
+                const tempUser = {
+                    name: 'temp',
+                    username: 'temp',
+                    password: 'secret',
+                };
+                cy.request('POST', 'http://localhost:3001/api/users/', tempUser);
+                cy.login(tempUser);
+
+                cy.contains('A better blog')
+                    .parent()
+                    .contains('view')
+                    .click()
+                    .parent()
+                    .should('not.contain', 'remove');
+            });
+
+            it('Blogs are ordered by likes', function() {
+                cy.contains('A better blog')
+                    .parent()
+                    .contains('view')
+                    .click()
+                    .parent()
+                    .get('.like-btn')
+                    .click();
+
+                cy.get('.blog').eq(0).should('contain', 'A better blog');
+
+                cy.contains('Some title')
+                    .parent().within(function() {
+                        cy.contains('view').click();
+                        cy.get('.like-btn').click().click();
+                    });
+
+                cy.get('.blog').eq(0).should('contain', 'Some title');
+                cy.get('.blog').eq(1).should('contain', 'A better blog');
+            });
+        });
     });
 });
