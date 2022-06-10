@@ -3,11 +3,10 @@ import anecdoteService from '../services/anecdotes';
 const reducer = (state = [], action) => {
     switch (action.type) {
         case 'VOTE': {
-            const id = action.data.id;
-            const anecdote = state.find((a) => a.id === id);
+            const anecdote = action.data.anecdote;
             return state
                 .map((a) =>
-                    a.id === id ? { ...anecdote, votes: anecdote.votes + 1 } : a
+                    a.id === anecdote.id ? anecdote : a
                 )
                 .sort((a, b) => b.votes - a.votes);
         }
@@ -16,17 +15,20 @@ const reducer = (state = [], action) => {
         }
         case 'SET_ANECDOTES': {
             const anecdotes = action.data.anecdotes;
-            return anecdotes;
+            return anecdotes.sort((a,b) => b.votes - a.votes);
         }
         default:
             return state;
     }
 };
 
-export const vote = (id) => {
-    return {
-        type: 'VOTE',
-        data: { id },
+export const vote = (anecdote) => {
+    return async dispatch => {
+        const updatedAnecdote = await anecdoteService.update({ ...anecdote, votes: anecdote.votes + 1 });
+        dispatch({
+            type: 'VOTE',
+            data: { anecdote: updatedAnecdote },
+        });
     };
 };
 

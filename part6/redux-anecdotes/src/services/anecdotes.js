@@ -8,9 +8,14 @@ const getAll = async () => {
 };
 
 const create = async (content) => {
-    const anecdote = { content, likes: 0 };
+    const anecdote = { content, votes: 0 };
     const res = await axios.post(baseUrl, anecdote);
     return res.data;
 };
 
-export default { getAll, create };
+const update = async (anecdote) => {
+    const res = await axios.put(`${baseUrl}/${anecdote.id}`, anecdote);
+    return res.data;
+};
+
+export default { getAll, create, update };
