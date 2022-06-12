@@ -1,4 +1,3 @@
-// import { useSelector } from 'react-redux';
 import { connect } from 'react-redux';
 
 const Notification = (props) => {
