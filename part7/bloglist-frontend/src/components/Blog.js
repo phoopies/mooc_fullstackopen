@@ -1,6 +1,23 @@
 import { useState } from 'react';
+import { likeBlog, removeBlog } from '../reducers/blogReducer';
+import { setNotification } from '../reducers/notificationReducer';
+import { useDispatch } from 'react-redux';
 
-const Blog = ({ blog, remove, isOwner, like }) => {
+const Blog = ({ blog, isOwner }) => {
+    const dispatch = useDispatch();
+
+    const like = blog => {
+        dispatch(likeBlog(blog));
+        dispatch(setNotification(`You liked ${blog.title}`, 'green', 5));
+    };
+
+    const remove =  blog => {
+        const really = confirm(`Remove blog ${blog.title}?`);
+        if (!really) return;
+        dispatch(removeBlog(blog));
+        dispatch(setNotification(`Removed ${blog.title}`), 'yellow', 3);
+    };
+
     const [showDetails, setShowDetails] = useState(false);
 
     return (
