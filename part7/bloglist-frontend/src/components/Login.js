@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { setNotification } from '../reducers/notificationReducer';
-import loginService from '../services/login';
 import TextInput from './TextInput';
 import { useDispatch } from 'react-redux';
+import { login } from '../reducers/userReducer';
 
-const Login = ({ setUser }) => {
+const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -13,17 +13,11 @@ const Login = ({ setUser }) => {
     const onSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            const user = await loginService.login(username, password);
-            setUser(user);
-            dispatch(setNotification(`${user.name} logged in`, 'green', 5));
-            setUsername('');
-            setPassword('');
-            console.log('Logged in as ' + user.name);
-        } catch (exception) {
-            console.log('Wrong credentials');
-            dispatch(setNotification('Wrong credentials!', 'red', 5));
-        }
+        dispatch(login({ username, password })); // TODO handle errors
+        dispatch(setNotification(`${username} logged in`, 'green', 5));
+        setUsername('');
+        setPassword('');
+        // dispatch(setNotification('Wrong credentials!', 'red', 5));
     };
 
     return (

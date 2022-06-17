@@ -10,9 +10,8 @@ const notificationSlice = createSlice({
         active: false,
     },
     reducers: {
-        setNewNotification(state, action) {
+        setNewNotification(_state, action) {
             return {
-                ...state,
                 message: action.payload.message,
                 color: action.payload.color,
                 active: true,

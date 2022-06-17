@@ -15,7 +15,7 @@ const Blog = ({ blog }) => {
         const really = confirm(`Remove blog ${blog.title}?`);
         if (!really) return;
         dispatch(removeBlog(blog)); // TODO handle errors
-        dispatch(setNotification(`Removed ${blog.title}`), 'yellow', 3);
+        dispatch(setNotification(`Removed ${blog.title}`, 'orange', 3));
     };
 
     const [showDetails, setShowDetails] = useState(false);

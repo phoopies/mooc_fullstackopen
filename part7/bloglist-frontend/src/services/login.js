@@ -17,6 +17,7 @@ const login = async (username, password) => {
 
 const logout = () => {
     window.localStorage.removeItem('user');
+    blogService.setToken('');
 };
 
 const getUser = () => {
