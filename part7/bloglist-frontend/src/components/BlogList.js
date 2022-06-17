@@ -12,11 +12,6 @@ const BlogList = () => {
                     <Blog
                         key={blog.id}
                         blog={blog}
-                        // isOwner={
-                        //     user &&
-                        //     blog.user &&
-                        //     (user.id === blog.user.id || user.id === blog.user)
-                        // }
                     />
                 ))}
             </div>

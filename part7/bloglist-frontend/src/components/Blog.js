@@ -3,18 +3,18 @@ import { likeBlog, removeBlog } from '../reducers/blogReducer';
 import { setNotification } from '../reducers/notificationReducer';
 import { useDispatch } from 'react-redux';
 
-const Blog = ({ blog, isOwner }) => {
+const Blog = ({ blog }) => {
     const dispatch = useDispatch();
 
-    const like = blog => {
+    const like = () => {
         dispatch(likeBlog(blog));
         dispatch(setNotification(`You liked ${blog.title}`, 'green', 5));
     };
 
-    const remove =  blog => {
+    const remove =  () => {
         const really = confirm(`Remove blog ${blog.title}?`);
         if (!really) return;
-        dispatch(removeBlog(blog));
+        dispatch(removeBlog(blog)); // TODO handle errors
         dispatch(setNotification(`Removed ${blog.title}`), 'yellow', 3);
     };
 
@@ -34,13 +34,12 @@ const Blog = ({ blog, isOwner }) => {
                             like
                         </button>
                     </div>
-                    {isOwner && <button onClick={remove}>remove</button>}
+                    <button onClick={remove}>remove</button>
                 </div>
             )}
             <button
                 onClick={() => {
                     setShowDetails(!showDetails);
-                    console.log(blog);
                 }}
             >
                 {showDetails ? 'close' : 'view'}

@@ -16,11 +16,11 @@ const blogSlice = createSlice({
         },
         updateBlog(state, action) {
             const blog = action.payload;
-            return state.map((b) => (b.id === blog.id ? blog : b));
+            return state.map(b => (b.id === blog.id ? blog : b));
         },
         deleteBlog(state, action) {
             const blog = action.payload;
-            return state.filter((b) => b.id !== blog.id);
+            return state.filter(b => b.id !== blog.id);
         },
     },
 });
@@ -45,7 +45,7 @@ export const likeBlog = (blog) => {
             ...blog,
             likes: blog.likes + 1,
         });
-        dispatch(updatedBlog(updatedBlog));
+        dispatch(updateBlog(updatedBlog));
     };
 };
 
