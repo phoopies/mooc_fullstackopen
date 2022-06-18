@@ -1,10 +1,10 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../reducers/userReducer';
+import { logout } from '../reducers/loginReducer';
 import { setNotification } from '../reducers/notificationReducer';
 
 const CurrentUser = () => {
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.user);
+    const user = useSelector((state) => state.login);
 
     const handleLogout = () => {
         dispatch(logout());

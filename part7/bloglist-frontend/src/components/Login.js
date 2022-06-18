@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { setNotification } from '../reducers/notificationReducer';
 import TextInput from './TextInput';
 import { useDispatch } from 'react-redux';
-import { login } from '../reducers/userReducer';
+import { login } from '../reducers/loginReducer';
 
 const Login = () => {
     const [username, setUsername] = useState('');
