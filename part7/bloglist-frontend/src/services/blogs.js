@@ -12,7 +12,7 @@ const getAll = async () => {
     return res.data;
 };
 
-const create = async blog => {
+const create = async (blog) => {
     const config = {
         headers: { Authorization: token },
     };
@@ -30,6 +30,13 @@ const update = async (blog) => {
     return res.data;
 };
 
+const comment = async (blog, comment) => {
+    const res = await axios.post(baseUrl + '/' + blog.id + '/comments', {
+        comment,
+    });
+    return res.data;
+};
+
 const remove = async (blog) => {
     const config = {
         headers: { Authorization: token },
@@ -39,4 +46,4 @@ const remove = async (blog) => {
     return res;
 };
 
-export default { getAll, setToken, create, update, remove };
+export default { getAll, setToken, create, update, remove, comment };

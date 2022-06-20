@@ -26,19 +26,20 @@ const App = () => {
 
     const userMatch = useMatch('/users/:id');
     const viewUser = userMatch
-        ? users.find(u => u.id === userMatch.params.id)
+        ? users.find((u) => u.id === userMatch.params.id)
         : null;
 
     const blogMatch = useMatch('/blogs/:id');
     const viewBlog = blogMatch
-        ? blogs.find(b => b.id === blogMatch.params.id)
+        ? blogs.find((b) => b.id === blogMatch.params.id)
         : null;
-
 
     return (
         <Box>
             <NavBar />
-            <Container>
+            <Container
+                sx={{ background: '#BBBBBA', padding: 5, borderRadius: 2 }}
+            >
                 <Notification />
                 <Routes>
                     <Route path="/" element={<BlogsView />} />

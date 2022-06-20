@@ -7,7 +7,7 @@ const Notification = () => {
     );
 
     return active ? (
-        <Alert severity={severity} className="notification">
+        <Alert severity={severity} className="notification" sx={{ margin: 2, padding: 1 }}>
             {message}
         </Alert>
     ) : null;

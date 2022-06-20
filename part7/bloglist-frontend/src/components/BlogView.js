@@ -31,8 +31,6 @@ const BlogView = ({ blog }) => {
         navigate('/');
     };
 
-    console.log(blog);
-
     const canDelete = () =>
         blog.user &&
         user &&
@@ -40,7 +38,7 @@ const BlogView = ({ blog }) => {
 
     return blog ? (
         <Stack spacing={2}>
-            <Typography variant="h3">
+            <Typography variant="h4">
                 {blog.title} by {blog.author}
             </Typography>
             <Link href={blog.url}>{blog.url}</Link>
@@ -57,14 +55,14 @@ const BlogView = ({ blog }) => {
                     Currently has {blog.likes} likes
                 </Typography>
             </Stack>
-            <BlogComments comments={blog.comments} />
+            <BlogComments blog={blog} />
             {canDelete() && (
                 <Button
                     variant="outlined"
                     startIcon={<DeleteIcon />}
                     onClick={remove}
                 >
-                    delete
+                    delete blog
                 </Button>
             )}
         </Stack>
