@@ -1,5 +1,6 @@
 import { useState, forwardRef, useImperativeHandle } from 'react';
 import PropTypes from 'prop-types';
+import { Button } from '@mui/material';
 
 const Hidable = forwardRef((props, ref) => {
     const [isVisible, setIsVisible] = useState(false);
@@ -15,9 +16,9 @@ const Hidable = forwardRef((props, ref) => {
     return (
         <div>
             {isVisible && props.children}
-            <button id={props.id} onClick={toggleVisibility}>
+            <Button id={props.id} onClick={toggleVisibility}>
                 {isVisible ? 'cancel' : props.buttonLabel}
-            </button>
+            </Button>
         </div>
     );
 });

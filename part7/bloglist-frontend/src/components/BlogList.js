@@ -1,21 +1,23 @@
-import Blog from './Blog';
 import { useSelector } from 'react-redux';
+import { Box, List, Typography, ListItemButton, ListItemText } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 const BlogList = () => {
-    const blogs = useSelector(state => state.blogs);
+    const blogs = useSelector((state) => state.blogs);
 
     return (
-        <div>
-            <h2>blogs</h2>
-            <div id="blogs">
-                {[...blogs].sort((a, b) => b.likes - a.likes).map((blog) => (
-                    <Blog
-                        key={blog.id}
-                        blog={blog}
-                    />
-                ))}
-            </div>
-        </div>
+        <Box>
+            <Typography variant="h2">blogs</Typography>
+            <List id="blogs">
+                {[...blogs]
+                    .sort((a, b) => b.likes - a.likes)
+                    .map((blog) => (
+                        <ListItemButton key={blog.id} component={Link} to={`/blogs/${blog.id}`}>
+                            <ListItemText>{blog.title}</ListItemText>
+                        </ListItemButton>
+                    ))}
+            </List>
+        </Box>
     );
 };
 

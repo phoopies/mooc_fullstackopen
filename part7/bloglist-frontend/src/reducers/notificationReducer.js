@@ -6,14 +6,14 @@ const notificationSlice = createSlice({
     name: 'notification',
     initialState: {
         message: '',
-        color: 'grey',
+        severity: '',
         active: false,
     },
     reducers: {
         setNewNotification(_state, action) {
             return {
                 message: action.payload.message,
-                color: action.payload.color,
+                severity: action.payload.severity,
                 active: true,
             };
         },
@@ -23,9 +23,9 @@ const notificationSlice = createSlice({
     },
 });
 
-export const setNotification = (message, color, timeSeconds) => {
+export const setNotification = (message, severity, timeSeconds) => {
     return (dispatch) => {
-        dispatch(setNewNotification({ message, color }));
+        dispatch(setNewNotification({ message, severity }));
         if (timeoutId) {
             clearTimeout(timeoutId);
         }

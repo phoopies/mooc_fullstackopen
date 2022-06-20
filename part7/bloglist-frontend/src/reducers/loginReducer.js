@@ -1,4 +1,5 @@
 import loginService from '../services/login';
+import blogService from '../services/blogs';
 import { createSlice } from '@reduxjs/toolkit';
 
 const loginSlice = createSlice({
@@ -34,6 +35,7 @@ export const logout = () => {
 export const initializeUser = () => {
     return async (dispatch) => {
         const user = await loginService.getUser();
+        blogService.setToken(user.token);
         dispatch(setUser(user));
     };
 };

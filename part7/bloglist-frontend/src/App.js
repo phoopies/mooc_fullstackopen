@@ -1,19 +1,17 @@
-import { useEffect, useRef } from 'react';
-import BlogForm from './components/BlogForm';
-import Hidable from './components/Hidable';
-import Login from './components/Login';
+import { useEffect } from 'react';
 import Notification from './components/Notification';
 import { useDispatch, useSelector } from 'react-redux';
-import BlogList from './components/BlogList';
+import BlogView from './components/BlogView';
 import { initializeBlogs } from './reducers/blogReducer';
 import { initializeUser } from './reducers/loginReducer';
-import CurrentUser from './components/CurrentUser';
 import NavBar from './components/NavBar';
 import Users from './components/Users';
 import NotFound from './components/NotFound';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useMatch } from 'react-router-dom';
 import { Box, Container } from '@mui/material';
 import { initializeusers } from './reducers/userReducer';
+import UserView from './components/UserView';
+import BlogsView from './components/BlogsView';
 
 const App = () => {
     const dispatch = useDispatch();
@@ -23,30 +21,19 @@ const App = () => {
         dispatch(initializeusers());
     }, [dispatch]);
 
-    const user = useSelector((state) => state.login);
-    const blogFormRef = useRef();
+    const users = useSelector((state) => state.users);
+    const blogs = useSelector((state) => state.blogs);
 
-    const Temp = () => (
-        <div>
-            {user ? (
-                <div>
-                    <CurrentUser />
-                    <Hidable
-                        buttonLabel="Add a new blog"
-                        id="new-blog-btn"
-                        ref={blogFormRef}
-                    >
-                        <BlogForm />
-                    </Hidable>
-                </div>
-            ) : (
-                <Hidable buttonLabel="Open login">
-                    <Login />
-                </Hidable>
-            )}
-            <BlogList />
-        </div>
-    );
+    const userMatch = useMatch('/users/:id');
+    const viewUser = userMatch
+        ? users.find(u => u.id === userMatch.params.id)
+        : null;
+
+    const blogMatch = useMatch('/blogs/:id');
+    const viewBlog = blogMatch
+        ? blogs.find(b => b.id === blogMatch.params.id)
+        : null;
+
 
     return (
         <Box>
@@ -54,8 +41,16 @@ const App = () => {
             <Container>
                 <Notification />
                 <Routes>
-                    <Route path="/" element={<Temp />}></Route>
-                    <Route path="/users" element={<Users />}></Route>
+                    <Route path="/" element={<BlogsView />} />
+                    <Route path="/users" element={<Users />} />
+                    <Route
+                        path="/users/:id"
+                        element={<UserView user={viewUser} />}
+                    />
+                    <Route
+                        path="/blogs/:id"
+                        element={<BlogView blog={viewBlog} />}
+                    />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </Container>

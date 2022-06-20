@@ -1,8 +1,8 @@
 import { createBlog } from '../reducers/blogReducer';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import TextInput from './TextInput';
 import { setNotification } from '../reducers/notificationReducer';
+import { Typography, Input, Stack, Button } from '@mui/material';
 
 const BlogForm = () => {
     const [title, setTitle] = useState('');
@@ -11,41 +11,45 @@ const BlogForm = () => {
 
     const dispatch = useDispatch();
 
-    const create = async (e) => {
+    const create = e => {
         e.preventDefault();
         dispatch(createBlog({ title, author, url }));
-        dispatch(setNotification(`Created ${title}`), 'green', 5);
+        dispatch(setNotification(`Created ${title}`, 'success', 5));
         setTitle('');
         setAuthor('');
         setUrl('');
     };
 
+    const canCreate = () => title && author && url;
+
     return (
-        <form onSubmit={create}>
-            <h2>Create a new blog</h2>
-            <TextInput
+        <Stack component="form" onSubmit={create} spacing={1} mb={2}>
+            <Typography variant="h3">Create a new blog</Typography>
+            <Input
                 text="title"
                 id="title"
                 value={title}
-                onChange={(value) => setTitle(value)}
+                onChange={(e) => setTitle(e.target.value)}
                 placeholder="title"
             />
-            <TextInput
+            <Input
                 text="author"
                 id="author"
                 value={author}
-                onChange={(value) => setAuthor(value)}
+                onChange={(e) => setAuthor(e.target.value)}
                 placeholder="author"
             />
-            <TextInput
+            <Input
                 text="url"
                 id="url"
                 value={url}
-                onChange={(value) => setUrl(value)}
+                onChange={(e) => setUrl(e.target.value)}
                 placeholder="url"
             />
-            <input type="submit" value="create" id="create-blog-btn" />
-        </form>
+            <Button disabled={!canCreate()} type="submit" id="create-blog-btn" variant='contained'>
+                Create
+            </Button>
+        </Stack>
     );
 };
 
