@@ -9,7 +9,7 @@ router.post('/', userExtractor, async (req, res, _next) => {
 
     // Would use mongoose internal validation but it returns a status code 500.
     if (!(body.title && body.url)) {
-        res.status(400).json({ 'error': 'Missing fields' });
+        res.status(400).json({ error: 'Missing fields' });
     }
 
     const user = req.user;
@@ -21,8 +21,18 @@ router.post('/', userExtractor, async (req, res, _next) => {
     res.status(201).json(savedBlog);
 });
 
+router.post('/:id/comments', async (req, res, _next) => {
+    const body = req.body;
+    const blog = await Blog.findById(req.params.id);
+
+    blog.comments = blog.comments.concat(body.comment);
+    await blog.save();
+
+    res.status(201).json(blog);
+});
+
 router.get('/', async (_req, res) => {
-    const blog = await(Blog.find({})).populate('user', { username: 1, name: 1 });
+    const blog = await Blog.find({}).populate('user', { username: 1, name: 1 });
 
     if (blog) {
         res.json(blog);
@@ -44,20 +54,19 @@ router.delete('/:id', userExtractor, async (req, res, _next) => {
     res.status(204).end();
 });
 
-
 router.put('/:id', async (req, res, _next) => {
     const body = req.body;
 
     // Can only edit likes.
     const blog = {
-        likes: body.likes
+        likes: body.likes,
     };
 
-    const updatedBlog = await Blog.findByIdAndUpdate(
-        req.params.id,
-        blog,
-        { new: true, runValidators: false, context: 'query' }
-    );
+    const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, {
+        new: true,
+        runValidators: false,
+        context: 'query',
+    });
 
     res.json(updatedBlog);
 });

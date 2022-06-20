@@ -5,17 +5,18 @@ const blogSchema = mongoose.Schema({
     author: String,
     url: String,
     likes: { type: Number, default: 0 },
+    comments: { type: [String], default: [] },
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    }
+        ref: 'User',
+    },
 });
 
 blogSchema.set('toJSON', {
     transform: (_document, returnedObject) => {
         returnedObject.id = returnedObject._id.toString();
         delete returnedObject._id;
-    }
+    },
 });
 
 module.exports = mongoose.model('Blog', blogSchema);
