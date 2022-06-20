@@ -11,6 +11,7 @@ import { likeBlog, removeBlog } from '../reducers/blogReducer';
 import { setNotification } from '../reducers/notificationReducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import BlogComments from './BlogComments';
 
 const BlogView = ({ blog }) => {
     const user = useSelector((state) => state.login);
@@ -56,6 +57,7 @@ const BlogView = ({ blog }) => {
                     Currently has {blog.likes} likes
                 </Typography>
             </Stack>
+            <BlogComments comments={blog.comments} />
             {canDelete() && (
                 <Button
                     variant="outlined"
