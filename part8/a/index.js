@@ -147,7 +147,7 @@ const resolvers = {
     addBook: (_root, args) => {
       const book = { ...args, id: uuid() };
       books = books.concat(book);
-      if (!authors.includes(book.author)) {
+      if (!authors.map(a => a.name).includes(book.author)) {
         // Make another mutation 'addAuthor' and call it somehow?
         // Or just do the checking in frontend?
         const author = { name: book.author, id: uuid() };
