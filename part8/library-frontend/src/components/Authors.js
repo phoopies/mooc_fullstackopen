@@ -9,6 +9,8 @@ const Authors = ({ show }) => {
     return null;
   }
 
+  console.log(authorsResult);
+
   return authorsResult.loading ? (
     "Loading..."
   ) : (
