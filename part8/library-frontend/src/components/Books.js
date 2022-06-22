@@ -1,36 +1,44 @@
-import { useQuery } from "@apollo/client"
-import { ALL_BOOKS } from "../queries"
+import { useQuery } from "@apollo/client";
+import { useState } from "react";
+import { ALL_BOOKS } from "../queries";
+import Select from "react-select";
+import BookTable from "./BookTable";
 
 const Books = (props) => {
-  const bookResult = useQuery(ALL_BOOKS);
+  const [genre, setGenre] = useState(undefined);
+  const bookResult = useQuery(ALL_BOOKS, {
+    variables: { genre: genre ? genre.value : "" },
+  });
+
+  // For genres, meh. Also doesn't update when new ones are created...
+  const allBookresult = useQuery(ALL_BOOKS);
 
   if (!props.show) {
-    return null
+    return null;
   }
-  console.log(bookResult.data);
-  return (
-    bookResult.loading ? 'Loading...' :
+
+  return bookResult.loading || allBookresult.loading ? (
+    "Loading..."
+  ) : (
     <div>
       <h2>books</h2>
-
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>author</th>
-            <th>published</th>
-          </tr>
-          {bookResult.data.allBooks.map((a) => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Select
+        value={genre}
+        isClearable
+        name="genres"
+        onChange={(s) => setGenre(s)}
+        options={[
+          ...new Set(
+            allBookresult.data.allBooks.reduce(
+              (prev, a) => prev.concat(a.genres),
+              []
+            )
+          ),
+        ].map((g) => ({ label: g, value: g }))}
+      />
+      <BookTable books={bookResult.data.allBooks} />
     </div>
-  )
-}
+  );
+};
 
-export default Books
+export default Books;
