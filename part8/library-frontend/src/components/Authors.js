@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client";
 import { ALL_AUTHORS } from "../queries";
 import AuthorEdit from "./AuthorEdit";
 
-const Authors = ({ show }) => {
+const Authors = ({ show, showError }) => {
   const authorsResult = useQuery(ALL_AUTHORS);
 
   if (!show) {
@@ -30,7 +30,7 @@ const Authors = ({ show }) => {
           ))}
         </tbody>
       </table>
-      <AuthorEdit authors={authorsResult.data.allAuthors} />
+      <AuthorEdit authors={authorsResult.data.allAuthors} showError={showError} />
     </div>
   );
 };

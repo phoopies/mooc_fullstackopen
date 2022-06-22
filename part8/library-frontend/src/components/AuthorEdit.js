@@ -3,12 +3,15 @@ import { useState } from "react";
 import Select from "react-select";
 import { ALL_AUTHORS, EDIT_AUTHOR } from "../queries";
 
-const AuthorEdit = ({ authors }) => {
+const AuthorEdit = ({ authors, showError }) => {
   const [born, setBorn] = useState("");
   const [author, setAuthor] = useState(undefined);
 
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
+    onError: (error) => {
+      showError(error.graphQLErrors[0].message, 5);
+    },
   });
 
   const handleSubmit = (e) => {
