@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "dev-server": "cd ../a && npm run dev",
+    "dev-server": "cd ../library-backend && npm run dev",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
