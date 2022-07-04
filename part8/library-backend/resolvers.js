@@ -25,9 +25,9 @@ const resolvers = {
       });
       const temp = books.map(async (book) => {
         const author = await Author.findById(book.author);
-        console.log(author, book);
         return {
           ...book.toObject(),
+          id: book.id,
           author: author.toObject(),
         };
       });

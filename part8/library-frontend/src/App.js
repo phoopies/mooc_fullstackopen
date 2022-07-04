@@ -5,7 +5,22 @@ import Books from "./components/Books";
 import LoginForm from "./components/LoginForm";
 import NewBook from "./components/NewBook";
 import Recommendations from "./components/Recommendations";
-import { BOOK_ADDED } from "./queries";
+import { ALL_BOOKS, BOOK_ADDED } from "./queries";
+
+export const updateBookCache = (cache, addedBook) => {
+  const isUnique = (allBooks, book) =>
+    !allBooks.map((b) => b.id).includes(book.id);
+  [...addedBook.genres, ""].forEach((genre) =>
+    cache.updateQuery(
+      { query: ALL_BOOKS, variables: { genre } },
+      ({ allBooks }) => ({
+        allBooks: isUnique(allBooks, addedBook)
+          ? allBooks.concat(addedBook)
+          : allBooks,
+      })
+    )
+  );
+};
 
 const App = () => {
   const [page, setPage] = useState("authors");
@@ -17,8 +32,12 @@ const App = () => {
   const client = useApolloClient();
 
   useSubscription(BOOK_ADDED, {
-    onSubscriptionData: ({ subscriptionData }) => {
-      alert(`A new book was added: ${subscriptionData.data.bookAdded.title}`);
+    onSubscriptionData: ({ subscriptionData, client }) => {
+      const addedBook = subscriptionData.data.bookAdded;
+      console.log(addedBook);
+      alert(`A new book was added: ${addedBook.title}`);
+
+      updateBookCache(client.cache, addedBook);
     },
   });
 
