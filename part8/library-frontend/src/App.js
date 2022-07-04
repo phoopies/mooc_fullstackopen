@@ -1,17 +1,26 @@
 import { useState } from "react";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient, useSubscription } from "@apollo/client";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import LoginForm from "./components/LoginForm";
 import NewBook from "./components/NewBook";
 import Recommendations from "./components/Recommendations";
+import { BOOK_ADDED } from "./queries";
 
 const App = () => {
   const [page, setPage] = useState("authors");
   const [error, setError] = useState("");
-  const [token, setToken] = useState(localStorage.getItem("library-user-token"));
+  const [token, setToken] = useState(
+    localStorage.getItem("library-user-token")
+  );
 
   const client = useApolloClient();
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      alert(`A new book was added: ${subscriptionData.data.bookAdded.title}`);
+    },
+  });
 
   const logout = () => {
     setToken(null);
@@ -41,7 +50,9 @@ const App = () => {
         {token ? (
           <>
             <button onClick={() => setPage("add")}>add book</button>
-            <button onClick={() => setPage("recommendations")}>recommendations</button>
+            <button onClick={() => setPage("recommendations")}>
+              recommendations
+            </button>
             <button onClick={logout}>logout</button>
           </>
         ) : (
@@ -55,7 +66,7 @@ const App = () => {
 
       <Books show={page === "books"} />
 
-      <Recommendations show={page==="recommendations"} />
+      <Recommendations show={page === "recommendations"} />
 
       <NewBook show={page === "add"} showError={showError} />
 
