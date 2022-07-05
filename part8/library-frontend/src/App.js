@@ -10,16 +10,24 @@ import { ALL_BOOKS, BOOK_ADDED } from "./queries";
 export const updateBookCache = (cache, addedBook) => {
   const isUnique = (allBooks, book) =>
     !allBooks.map((b) => b.id).includes(book.id);
-  [...addedBook.genres, ""].forEach((genre) =>
-    cache.updateQuery(
-      { query: ALL_BOOKS, variables: { genre } },
-      ({ allBooks }) => ({
-        allBooks: isUnique(allBooks, addedBook)
-          ? allBooks.concat(addedBook)
-          : allBooks,
-      })
-    )
-  );
+
+  [...addedBook.genres, ""].forEach((genre) => {
+    try {
+      cache.updateQuery(
+        { query: ALL_BOOKS, variables: { genre } },
+        ({ allBooks }) => {
+          return {
+            allBooks: isUnique(allBooks, addedBook)
+              ? allBooks.concat(addedBook)
+              : allBooks,
+          };
+        }
+      );
+    } catch (e) {
+      // Query isnt probably cached yet
+      console.log(e.message);
+    }
+  });
 };
 
 const App = () => {

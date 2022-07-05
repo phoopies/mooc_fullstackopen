@@ -34,15 +34,8 @@ const resolvers = {
       return temp;
     },
     allAuthors: async () => {
-      const authors = await Author.find({});
-      const books = await Book.find({});
-      const temp = authors.map((author) => ({
-        ...author.toObject(),
-        bookCount: books.filter(
-          (book) => book.author.toString() === author.id.toString()
-        ).length,
-      }));
-      return temp;
+      const authors = await Author.find({}).populate('books');
+      return authors.map(author => ({...author.toObject(), 'bookCount': author.books.length}));
     },
   },
   Mutation: {
@@ -53,14 +46,13 @@ const resolvers = {
       }
       try {
         const book = new Book({ ...args });
-        const author = await Author.findOne({ name: args.author });
+        let author = await Author.findOne({ name: args.author });
         if (!author) {
-          const newAuthor = new Author({ name: args.author });
-          await newAuthor.save();
-          book.author = newAuthor;
-        } else {
-          book.author = author;
+          author = new Author({ name: args.author });
         }
+        book.author = author;
+        author.books = author.books.concat(book)
+        await author.save();
         await book.save();
 
         pubSub.publish("BOOK_ADDED", { bookAdded: book });
