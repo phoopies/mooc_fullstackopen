@@ -1,0 +1,34 @@
+### bmi OK
+GET http://localhost:3003/bmi?height=120&weight=30
+
+### bmi missing params
+GET http://localhost:3003/bmi?id=2
+
+### exercise OK
+
+POST http://localhost:3003/calculator
+Content-Type: application/json
+
+{
+  "daily_exercises": [1, 0, 2, 0, 3, 0, 2.5],
+  "target": 2.5
+}
+
+### exercise malformatted paramas
+
+POST http://localhost:3003/calculator
+Content-Type: application/json
+
+{
+  "daily_exercises": [1, 0, 2, 0, 3, 0, "nice"],
+  "target": 2.5
+}
+
+### exercise missing paramas
+
+POST http://localhost:3003/calculator
+Content-Type: application/json
+
+{
+  "target": 2.5
+}
