@@ -1,3 +1,23 @@
+interface exerciceArgs {
+    hours: number[],
+    target: number,
+}
+
+const parseExerciseArgs = (args: Array<string>): exerciceArgs => {
+    if (args.length  < 4 ) throw new Error('Not enough arguments');
+
+    const target: number = Number(args[2]);
+    const hours: number[] = args.slice(3).map(n => Number(n));
+  
+    if ( !isNaN(target) && !hours.includes(NaN)) {
+        return {
+            hours, target
+        };
+    } else {
+      throw new Error('Provided values were not numbers!');
+    }
+  }
+
 type Rating = 1 | 2 | 3;
 
 type RatingDescription = 'Bad' | 'Good' | 'Excellent';
@@ -62,4 +82,5 @@ const calculateExercises = (hours: number[], target: number): Result => {
     }
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+const exArgs = parseExerciseArgs(process.argv);
+console.log(calculateExercises(exArgs.hours, exArgs.target));

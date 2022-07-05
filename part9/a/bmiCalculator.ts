@@ -1,10 +1,10 @@
-interface parsedArgs {
+interface bmiArgs {
     mass?: number;
     height?: number;
     hasArgs: boolean;
 }
 
-const parseArgs = (args: Array<string>): parsedArgs => {
+const parseBmiArgs = (args: Array<string>): bmiArgs => {
     if (args.length !== 4) return { hasArgs: false };
 
     const mass = Number(args[2]);
@@ -35,6 +35,6 @@ const calculateBmi = (heightCm: number, massKg: number): string => {
     else return 'Overweight (unhealthy weight)';
 };
 
-const args = parseArgs(process.argv);
-if (args.hasArgs) console.log(calculateBmi(args.mass, args.height));
+const bmiArgs = parseBmiArgs(process.argv);
+if (bmiArgs.hasArgs) console.log(calculateBmi(bmiArgs.mass, bmiArgs.height));
 else console.log(calculateBmi(180, 74));
