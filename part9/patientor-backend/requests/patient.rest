@@ -1,3 +1,54 @@
 @url = http://localhost:3001/api
 
+### Get all
 GET {{url}}/patients
+
+### Create new
+POST {{url}}/patients
+Content-Type: application/json
+
+{
+    "name": "new",
+    "gender": "male",
+    "occupation": "teacher",
+    "ssn": "121212-121A",
+    "dateOfBirth": "1991-12-12"
+}
+
+### Create new, invalid ssn
+
+POST {{url}}/patients
+Content-Type: application/json
+
+{
+    "name": "new",
+    "gender": "male",
+    "occupation": "teacher",
+    "ssn": "121a21A",
+    "dateOfBirth": "1991-12-12"
+}
+
+### Create new, invalid dob
+
+POST {{url}}/patients
+Content-Type: application/json
+
+{
+    "name": "new",
+    "gender": "male",
+    "occupation": "teacher",
+    "ssn": "121212-121A",
+    "dateOfBirth": "19911231adas2"
+}
+
+### Create new, missing field
+
+POST {{url}}/patients
+Content-Type: application/json
+
+{
+    "gender": "male",
+    "occupation": "teacher",
+    "ssn": "121212-121A",
+    "dateOfBirth": "1991-12-12"
+}
