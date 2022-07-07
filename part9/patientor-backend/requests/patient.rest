@@ -3,6 +3,9 @@
 ### Get all
 GET {{url}}/patients
 
+### Get spesific
+GET {{url}}/patients/d2773598-f723-11e9-8f0b-362b9e155667
+
 ### Create new
 POST {{url}}/patients
 Content-Type: application/json
