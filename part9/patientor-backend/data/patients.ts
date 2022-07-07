@@ -44,6 +44,6 @@ const data = [
   },
 ];
 
-const patients: Patient[] = data.map((obj) => convertToPatient(obj));
+const patients: Patient[] = data.map((obj) => convertToPatient({...obj, entries: []}));
 
 export default patients;
