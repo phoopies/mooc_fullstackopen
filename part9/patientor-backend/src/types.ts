@@ -26,8 +26,13 @@ export type PublicPatient = Omit<Patient, 'ssn' | 'entries'>;
 
 export type NewPatient = Omit<Patient, 'id' | 'entries'>;
 
+export enum EntryType {
+  Hospital = "Hospital",
+  OccupationalHealthcare = "OccupationalHealthcare",
+  HealthCheck = "HealthCheck",
+}
 
-interface BaseEntry {
+export interface BaseEntry {
   id: string;
   description: string;
   date: string;
@@ -35,12 +40,12 @@ interface BaseEntry {
   diagnosisCodes?:  Array<Diagnose['code']>;
 }
 
-interface DateRange {
+export interface DateRange {
   startDate: string;
   endDate: string;
 }
 
-interface Discharge {
+export interface Discharge {
   date: string;
   criteria: string;
 }
@@ -52,20 +57,20 @@ export enum HealthCheckRating {
   "CriticalRisk" = 3
 }
 
-interface HospitalEntry extends BaseEntry {
-  type: "Hospital";
+export interface HospitalEntry extends BaseEntry {
+  type: EntryType.Hospital;
   discharge: Discharge;
 }
 
-interface OccupationalHealthcareEntry extends BaseEntry {
-  type: "OccupationalHealthcare";
+export interface OccupationalHealthcareEntry extends BaseEntry {
+  type: EntryType.OccupationalHealthcare;
   employerName: string;
   sickLeave?: DateRange;
 
 }
 
-interface HealthCheckEntry extends BaseEntry {
-  type: "HealthCheck";
+export interface HealthCheckEntry extends BaseEntry {
+  type: EntryType.HealthCheck;
   healthCheckRating: HealthCheckRating;
 }
 
@@ -73,3 +78,7 @@ export type Entry =
   | HospitalEntry
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
+
+export type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+
+export type NewEntry = UnionOmit<Entry, 'id'>;

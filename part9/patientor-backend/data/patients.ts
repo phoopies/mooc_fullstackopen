@@ -1,7 +1,8 @@
 
 import { Patient, Gender } from '../src/types';
+import { convertToPatient } from '../src/utils';
 
-const patients: Patient[] = [
+const data = [
   {
     id: 'd2773336-f723-11e9-8f0b-362b9e155667',
     name: 'John McClane',
@@ -112,5 +113,7 @@ const patients: Patient[] = [
     ],
   },
 ];
+
+const patients: Patient[] = data.map(obj => convertToPatient({...obj}));
 
 export default patients;

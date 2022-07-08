@@ -1,5 +1,5 @@
 import patients from '../../data/patients';
-import { NewPatient, Patient, PublicPatient } from '../types';
+import { Entry, NewEntry, NewPatient, Patient, PublicPatient } from '../types';
 import _, { uniqueId } from 'lodash';
 
 const getAll = (): Patient[] => patients;
@@ -18,6 +18,12 @@ const addNewPatient = (patient: NewPatient): Patient => {
   return newPatient;
 };
 
+const addEntry = (patient: Patient, entry: NewEntry): Patient => {
+  const newEntry: Entry = { id: uniqueId(), ...entry };
+  patient.entries.push(newEntry);
+  return patient;
+};
+
 const getById = (id: string): Patient | undefined => {
   return patients.find(p => id === p.id);
 };
@@ -26,5 +32,6 @@ export default {
   getAll,
   getAllPublicPatients,
   addNewPatient,
-  getById
+  getById,
+  addEntry,
 };
