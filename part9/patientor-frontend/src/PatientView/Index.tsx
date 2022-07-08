@@ -7,6 +7,7 @@ import { apiBaseUrl } from '../constants';
 import HealthRatingBar from '../components/HealthRatingBar';
 import { useParams } from 'react-router-dom';
 import { updatePatient, useStateValue } from '../state';
+import Entry from './Entry';
 
 const PatientView = () => {
   const { id } = useParams<{ id: string }>();
@@ -36,27 +37,35 @@ const PatientView = () => {
     };
     const isPatientInState = (): boolean => patient.ssn !== undefined;
 
-    if (!isPatientInState())
-      getPatientDetails().catch((e: unknown) => console.error(e));
+    if (!isPatientInState()) void getPatientDetails();
   }, []);
 
   return (
-    <Grid container spacing={2}>
-      <Grid xs={4} container item direction="column">
-        <Typography>Name</Typography>
-        <Typography>Ssn</Typography>
-        <Typography>Gender</Typography>
-        <Typography>Occupation</Typography>
-        <Typography>Health Rating</Typography>
+    <div>
+      <Grid container spacing={2}>
+        <Grid xs={4} container item direction="column">
+          <Typography>Name</Typography>
+          <Typography>Ssn</Typography>
+          <Typography>Gender</Typography>
+          <Typography>Occupation</Typography>
+          <Typography>Health Rating</Typography>
+        </Grid>
+        <Grid xs={8} container item direction="column">
+          <Typography>{patient.name}</Typography>
+          <Typography>{patient.ssn}</Typography>
+          <Typography>{patient.gender}</Typography>
+          <Typography>{patient.occupation}</Typography>
+          <HealthRatingBar showText={false} rating={1} />
+        </Grid>
       </Grid>
-      <Grid xs={8} container item direction="column">
-        <Typography>{patient.name}</Typography>
-        <Typography>{patient.ssn}</Typography>
-        <Typography>{patient.gender}</Typography>
-        <Typography>{patient.occupation}</Typography>
-        <HealthRatingBar showText={false} rating={1} />
+      <Grid container direction="column" spacing={2}>
+        {patient.entries?.map((entry) => (
+          <Grid item key={entry.id}>
+            <Entry entry={entry} />
+          </Grid>
+        ))}
       </Grid>
-    </Grid>
+    </div>
   );
 };
 
