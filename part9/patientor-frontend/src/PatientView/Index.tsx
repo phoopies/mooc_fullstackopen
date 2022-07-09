@@ -10,6 +10,7 @@ import { updatePatient, useStateValue } from '../state';
 import Entry from './Entry';
 import { EntryFormValues } from '../AddEntryModal/AddEntryForm';
 import AddEntryModal from '../AddEntryModal';
+import { isDate, ValidationError } from '../utils';
 
 const PatientView = () => {
   const { id } = useParams<{ id: string }>();
@@ -25,9 +26,25 @@ const PatientView = () => {
     setError(undefined);
   };
 
+  const validateEntryFormValues = (values: EntryFormValues): void => {
+    if (!isDate(values.date)) throw new Error("Date is formatted incorrectly");
+    if (values.sickLeaveEnd && !values.sickLeaveStart)
+      throw new ValidationError("Sick leave start date must be provided when end date is provided");
+    if (!values.sickLeaveEnd && values.sickLeaveStart)
+      throw new ValidationError("Sick leave end date must be provided when start date is provided");    
+    if (values.sickLeaveStart && !isDate(values.sickLeaveStart))
+      throw new ValidationError("Sick leave start date is formatted incorrectly");
+    if (values.sickLeaveEnd && !isDate(values.sickLeaveEnd))
+      throw new ValidationError("Sick leave end date is formatted incorrectly");
+    if (values.sickLeaveEnd && values.sickLeaveStart && Date.parse(values.sickLeaveStart) > Date.parse(values.sickLeaveEnd))
+      throw new ValidationError("Sick leave start must be before the end date");
+    if (values.dischargeDate && !isDate(values.dischargeDate))
+      throw new ValidationError("Discharge date is formatted incorrectly");
+  };
+
   const submitNewEntry = async (values: EntryFormValues) => {
     try {
-      console.log(values);
+      validateEntryFormValues(values);
       const { data: updatedPatient } = await axios.post<Patient>(
         `${apiBaseUrl}/patients/${patient.id}/entries`,
         values
@@ -40,6 +57,9 @@ const PatientView = () => {
         setError(
           String(e?.response?.data?.error) || 'Unrecognized axios error'
         );
+      } else if (e instanceof Error) {
+        console.error(e.message);
+        setError(e.message);
       } else {
         console.error('Unknown error', e);
         setError('Unknown error');

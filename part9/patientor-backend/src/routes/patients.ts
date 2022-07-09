@@ -4,12 +4,11 @@ import { convertToNewEntry, convertToNewPatient } from '../utils';
 
 const router = express.Router();
 
-const createErrorMsg = (e: unknown): string => {
-  let errorMessage = 'Something went wrong.';
+const createErrorMsg = (e: unknown): {error: string} => {
   if (e instanceof Error) {
-    errorMessage += ' Error: ' + e.message;
+    return {error: e.message};
   }
-  return errorMessage;
+  return {error: "Something went wrong"};
 };
 
 router.get('/', (_req, res) => {
