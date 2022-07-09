@@ -1,30 +1,26 @@
 import { Typography, TypographyProps } from '@material-ui/core';
-import { Entry } from '../types';
+import { Entry, EntryType } from '../types';
 import { assertNever } from '../utils';
 
 const EntryDetails = ({ entry }: { entry: Entry }) => {
-  const Text = (props : TypographyProps) => (
+  const Text = (props: TypographyProps) => (
     <Typography variant="body2" color="textPrimary" gutterBottom {...props} />
   );
 
   const specific = () => {
     switch (entry.type) {
-      case 'HealthCheck':
-        return (
-          <Text>
-            Condition: {entry.healthCheckRating.toString()}
-          </Text>
-        );
-      case 'Hospital':
+      case EntryType.HealthCheck:
+        return <Text>Condition: {entry.healthCheckRating.toString()}</Text>;
+      case EntryType.Hospital:
         return (
           <Text>
             Discharge in {entry.discharge.date} if {entry.discharge.criteria}
           </Text>
         );
-      case 'OccupationalHealthcare':
+      case EntryType.OccupationalHealthcare:
         return (
-          <Text>
-            Employer: {entry.employerName}{' '}
+          <div>
+            <Text>Employer: {entry.employerName} </Text>
             {entry.sickLeave ? (
               <Text>
                 Sick leave: {entry.sickLeave.startDate} -{' '}
@@ -33,7 +29,7 @@ const EntryDetails = ({ entry }: { entry: Entry }) => {
             ) : (
               ''
             )}
-          </Text>
+          </div>
         );
       default:
         return assertNever(entry);
@@ -41,10 +37,8 @@ const EntryDetails = ({ entry }: { entry: Entry }) => {
   };
 
   return (
-    <div style={{margin: 5}}>
-      <Text>
-        Diagnosed by {entry.specialist}
-      </Text>
+    <div style={{ margin: 5 }}>
+      <Text>Diagnosed by {entry.specialist}</Text>
       {specific()}
     </div>
   );

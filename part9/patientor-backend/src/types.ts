@@ -10,8 +10,6 @@ export interface Diagnose {
   latin?: string;
 }
 
-
-
 export interface Patient {
   id: string;
   name: string;
@@ -27,9 +25,9 @@ export type PublicPatient = Omit<Patient, 'ssn' | 'entries'>;
 export type NewPatient = Omit<Patient, 'id' | 'entries'>;
 
 export enum EntryType {
-  Hospital = "Hospital",
-  OccupationalHealthcare = "OccupationalHealthcare",
-  HealthCheck = "HealthCheck",
+  Hospital = 'Hospital',
+  OccupationalHealthcare = 'OccupationalHealthcare',
+  HealthCheck = 'HealthCheck',
 }
 
 export interface BaseEntry {
@@ -37,7 +35,7 @@ export interface BaseEntry {
   description: string;
   date: string;
   specialist: string;
-  diagnosisCodes?:  Array<Diagnose['code']>;
+  diagnosisCodes?: Array<Diagnose['code']>;
 }
 
 export interface DateRange {
@@ -51,10 +49,10 @@ export interface Discharge {
 }
 
 export enum HealthCheckRating {
-  "Healthy" = 0,
-  "LowRisk" = 1,
-  "HighRisk" = 2,
-  "CriticalRisk" = 3
+  'Healthy' = 0,
+  'LowRisk' = 1,
+  'HighRisk' = 2,
+  'CriticalRisk' = 3,
 }
 
 export interface HospitalEntry extends BaseEntry {
@@ -66,7 +64,6 @@ export interface OccupationalHealthcareEntry extends BaseEntry {
   type: EntryType.OccupationalHealthcare;
   employerName: string;
   sickLeave?: DateRange;
-
 }
 
 export interface HealthCheckEntry extends BaseEntry {
@@ -79,6 +76,8 @@ export type Entry =
   | OccupationalHealthcareEntry
   | HealthCheckEntry;
 
-export type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+export type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
 
 export type NewEntry = UnionOmit<Entry, 'id'>;
