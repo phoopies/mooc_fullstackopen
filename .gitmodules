@@ -4,3 +4,6 @@
 [submodule "part3"]
 	path = part3
 	url = https://github.com/phoopies/mooc_fullstackopen_backend_p3
+[submodule "part10/rate-repository-api"]
+	path = part10/rate-repository-api
+	url = https://github.com/fullstack-hy2020/rate-repository-api
