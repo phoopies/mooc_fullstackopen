@@ -7,6 +7,6 @@
 [submodule "part10/rate-repository-api"]
 	path = part10/rate-repository-api
 	url = https://github.com/fullstack-hy2020/rate-repository-api
-[submodule ".\\part11\\full-stack-open-pokedex\\"]
-	path = .\\part11\\full-stack-open-pokedex\\
+[submodule "part11/full-stack-open-pokedex"]
+	path = part11/full-stack-open-pokedex
 	url = https://github.com/phoopies/full-stack-open-pokedex
