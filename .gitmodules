@@ -10,3 +10,6 @@
 [submodule "part11/full-stack-open-pokedex"]
 	path = part11/full-stack-open-pokedex
 	url = https://github.com/phoopies/full-stack-open-pokedex
+[submodule "part11/full-stack-open-part11-20"]
+	path = part11/full-stack-open-part11-20
+	url = https://github.com/phoopies/full-stack-open-part11-20
