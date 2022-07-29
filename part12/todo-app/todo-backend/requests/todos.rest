@@ -1,0 +1,29 @@
+@localUrl = http://localhost:3000/todos
+@baseUrl = {{localUrl}}
+
+### Get all
+
+GET {{baseUrl}}/
+
+### Get one
+
+GET {{baseUrl}}/62e2470df4be0df0aec769be
+
+### Create new
+
+POST {{baseUrl}}/
+Content-Type: application/json
+
+{
+    "text": "Hello world",
+    "done": false
+}
+
+### Update
+
+PUT {{baseUrl}}/62e2470df4be0df0aec769be
+Content-Type: application/json
+
+{
+    "done": true
+}
