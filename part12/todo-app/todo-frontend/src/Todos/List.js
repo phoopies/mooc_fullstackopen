@@ -8,11 +8,12 @@ const TodoList = ({ todos, deleteTodo, completeTodo }) => {
         .map((todo) => (
           <Todo
             todo={todo}
+            key={todo._id}
             deleteTodo={deleteTodo}
             completeTodo={completeTodo}
           />
         ))
-        .reduce((acc, cur) => [...acc, <hr />, cur], [])}
+        .reduce((acc, cur) => [...acc,<hr key={acc.length}/>, cur], [])}
     </>
   );
 };

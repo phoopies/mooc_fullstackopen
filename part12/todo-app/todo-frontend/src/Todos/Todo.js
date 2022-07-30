@@ -1,4 +1,4 @@
-const Todo = ({ todo, deleteTodo, completeTodo }) => {
+const Todo = ({ todo, deleteTodo, completeTodo, ...props }) => {
   const onClickDelete = () => {
     deleteTodo(todo);
   };
@@ -34,6 +34,7 @@ const Todo = ({ todo, deleteTodo, completeTodo }) => {
         maxWidth: "70%",
         margin: "auto",
       }}
+      {...props}
     >
       <span>{todo.text}</span>
       {todo.done ? doneInfo : notDoneInfo}
