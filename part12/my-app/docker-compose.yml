@@ -1,20 +1,16 @@
 services:
   app:
     extends:
-      file: ./todo-frontend/docker-compose.dev.yml
+      file: ./frontend/docker-compose.yml
       service: app
   server:
     extends:
-      file: ./todo-backend/docker-compose.dev.yml
+      file: ./backend/docker-compose.yml
       service: server
   mongo:
     extends:
-      file: ./todo-backend/docker-compose.dev.yml
+      file: ./backend/docker-compose.yml
       service: mongo
-  redis:
-    extends:
-      file: ./todo-backend/docker-compose.dev.yml
-      service: redis
   nginx:
     image: nginx:1.20.1
     volumes:
@@ -27,4 +23,4 @@ services:
       - server
 
 volumes:
-  mongo_data_dev:
+  mongo_dataa:

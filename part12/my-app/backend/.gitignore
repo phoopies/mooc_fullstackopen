@@ -1,0 +1,7 @@
+redis_data
+redis_data_dev
+mongo_data
+mongo_data_dev
+
+node_modules
+.env

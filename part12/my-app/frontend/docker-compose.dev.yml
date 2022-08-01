@@ -1,0 +1,11 @@
+services:
+  app:
+    image: myapp-frontend-dev
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./:/usr/src/app/
+    ports:
+      - 5000:3000
+    container_name: myapp-frontend-dev
