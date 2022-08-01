@@ -1,5 +1,7 @@
 mongo_data
 redis_data
+mongo_data_dev
+redis_data_dev
 
 # Logs
 logs

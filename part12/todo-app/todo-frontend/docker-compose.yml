@@ -1,0 +1,7 @@
+services:
+  app:
+    image: todo-frontend
+    build: .
+    ports:
+      - 5000:3000
+    container_name: todo-frontend
