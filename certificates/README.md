@@ -1,0 +1,7 @@
+![fullstack](fullstack.png)
+![graphql](graphql.png)
+![typescript](typescript.png)
+![react native](react-native.png)
+![ci-cd](ci-cd.png)
+![containers](containers.png)
+![relational databases](relational-databases.png)
