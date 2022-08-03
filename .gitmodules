@@ -13,3 +13,6 @@
 [submodule "part11/full-stack-open-part11-20"]
 	path = part11/full-stack-open-part11-20
 	url = https://github.com/phoopies/full-stack-open-part11-20
+[submodule "part13"]
+	path = part13
+	url = https://github.com/phoopies/fullstack-open-part13-relational-db
